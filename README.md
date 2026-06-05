@@ -1,5 +1,9 @@
 # LRUCache
 
+---
+
+## Overview
+
 A custom **Least Recently Used (LRU) Cache** implementation written in modern C++.
 
 This project was built to explore:
@@ -13,6 +17,29 @@ This project was built to explore:
 - Performance benchmarking
 
 The cache provides **O(1)** average-time lookup, insertion, update, and eviction.
+
+---
+
+## Motivation / Goals
+
+The goal of this project is to understand how a real-world caching system works internally by building it from scratch in modern C++.
+
+Instead of relying on high-level abstractions, this implementation focuses on learning the underlying mechanics of:
+
+- how hash tables provide fast key lookup
+- how a doubly linked list maintains usage order efficiently
+- how LRU (Least Recently Used) eviction policies are implemented in practice
+- how memory ownership and pointer management work in performance-critical data structures
+- how move semantics improve efficiency by avoiding unnecessary copies
+
+This project also serves as a practical exercise in writing:
+
+- clean template-based C++ code
+- safe resource management logic
+- predictable O(1) data structure operations
+- benchmarkable and testable systems
+
+Overall, the goal is not just to build a cache, but to deeply understand the design decisions behind high-performance in-memory storage systems.
 
 ---
 
@@ -35,6 +62,96 @@ The cache provides **O(1)** average-time lookup, insertion, update, and eviction
 - Move assignment operator
 - Unit tests
 - Benchmarks
+
+---
+
+## Design Overview
+
+The LRU Cache is built using a **combination of a doubly linked list and a hash map** to achieve O(1) operations.
+
+### Core Idea
+
+- Hash Map → fast key lookup
+- Doubly Linked List → maintain usage order (LRU → MRU)
+
+---
+
+### Internal Structure
+
+```
+          +----------------------+
+          |   unordered_map      |
+          |  key -> Node*        |
+          +----------+-----------+
+                     |
+                     v
+        +---------------------------+
+        |     Doubly Linked List    |
+        |                           |
+        |  MRU  <->  ...  <->  LRU  |
+        |   ^                 ^     |
+        |   |                 |     |
+        +---|-----------------|-----+
+            head             tail
+```
+
+---
+
+### Access Flow (get / put)
+
+```
+GET(key)
+  |
+  v
+[Hash Map lookup]
+  |
+  +--> Not found → MISS
+  |
+  +--> Found
+         |
+         v
+   Move node to FRONT (MRU)
+         |
+         v
+       Return value
+
+
+PUT(key, value)
+  |
+  v
+[Key exists?]
+  |
+  +--> YES → update value + move to FRONT
+  |
+  +--> NO  → create node
+               |
+               v
+        Insert at FRONT
+               |
+               v
+        If size > capacity:
+               remove LRU (TAIL)
+```
+
+---
+
+### Eviction Policy
+
+```
+Least Recently Used (LRU) = tail node
+
+When capacity is exceeded:
+    remove tail
+```
+
+---
+
+### Complexity Guarantee
+
+All major operations run in:
+
+- O(1) average time
+- O(n) only during rehash (rare)
 
 ---
 
