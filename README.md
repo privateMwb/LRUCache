@@ -141,24 +141,53 @@ The project includes unit tests covering:
 
 ## Project Structure
 
-```text
+```txt
 LRUCache/
 ├── LRUCache.h
 ├── LRUCache.tpp
 ├── Node.h
+│
 ├── tests/
+│   └── test.cpp
+│
 ├── benchmarks/
+│   └── benchmark.cpp
+│
 ├── examples/
-└── README.md
+│   └── examples.cpp
+│
+├── build/
+│   ├── test
+│   ├── benchmark
+│   └── examples
+│
+├── README.md
+└── LICENSE
 ```
 
 ---
 
 ## Build
 
+### Compile Tests
+
 ```bash
-g++ -std=c++20 tests/main.cpp -o test
+g++ -std=c++20 tests/test.cpp -o test
 ./test
+```
+
+### Compile Benchmarks
+
+```bash
+g++ -std=c++20 benchmarks/benchmark.cpp -o benchmark
+./benchmark
+```
+
+### Compile Examples
+
+```bash
+g++ -std=c++20 examples/examples.cpp -o examples
+./examples
 ```
 
 ---
@@ -173,3 +202,7 @@ It was built to deeply understand:
 - Hash map + linked list integration
 - Modern C++ design patterns
 - Move semantics and resource handling
+
+## License
+
+MIT License
