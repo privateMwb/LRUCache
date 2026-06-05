@@ -1,4 +1,5 @@
 # LRUCache
+
 ---
 
 ## Overview
@@ -310,14 +311,33 @@ g++ -std=c++20 examples/examples.cpp -o examples
 
 ## Notes
 
-This project is primarily educational and is not intended for production use.
+This project is primarily educational and is intended to demonstrate how an LRU cache works internally rather than serving as a production-ready caching system.
 
-It was built to deeply understand:
+### Limitations
 
-- Cache eviction (LRU strategy)
+- Not thread-safe (no concurrency control or locking mechanisms)
+- No custom allocator support
+- No advanced memory pooling optimizations
+- Performance depends on the quality of the hash function and system memory behavior
+
+### Optimization Notes
+
+- Core operations (`get`, `put`, `erase`) are designed to run in **O(1)** average time
+- Uses a combination of `std::unordered_map` and a doubly linked list to minimize overhead
+- Move semantics are implemented to reduce unnecessary copying
+- Cache efficiency may vary under extreme workloads or poor hash distribution
+
+### Educational Purpose
+
+This project was built to understand:
+
+- LRU eviction strategy design
 - Hash map + linked list integration
-- Modern C++ design patterns
-- Move semantics and resource handling
+- Pointer-based data structure management
+- Cache performance trade-offs
+- Modern C++ design techniques
+
+---
 
 ## License
 
