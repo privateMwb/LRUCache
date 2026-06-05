@@ -77,7 +77,6 @@ The LRU Cache is built using a **combination of a doubly linked list and a hash 
 - Hash Map → fast key lookup
 - Doubly Linked List → maintain usage order (LRU → MRU)
 
----
 
 ### Internal Structure
 
@@ -97,8 +96,6 @@ The LRU Cache is built using a **combination of a doubly linked list and a hash 
         +---|-----------------|-----+
             head             tail
 ```
-
----
 
 ### Access Flow (get / put)
 
@@ -136,8 +133,6 @@ PUT(key, value)
                remove LRU (TAIL)
 ```
 
----
-
 ### Eviction Policy
 
 ```
@@ -146,15 +141,6 @@ Least Recently Used (LRU) = tail node
 When capacity is exceeded:
     remove tail
 ```
-
----
-
-### Complexity Guarantee
-
-All major operations run in:
-
-- O(1) average time
-- O(n) only during rehash (rare)
 
 ---
 
