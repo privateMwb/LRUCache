@@ -1,5 +1,8 @@
 # LRUCache
 
+![C++](https://img.shields.io/badge/C%2B%2B-20-blue)
+![Status](https://img.shields.io/badge/status-learning-green)
+
 ---
 
 ## Overview
