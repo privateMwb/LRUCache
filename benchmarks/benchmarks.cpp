@@ -1,198 +1,517 @@
+// LRUCache Benchmark Suite
+// Measures core cache operations:
+//
+// - put without reserve     (insert with internal bucket allocation)
+// - put with reserve        (insert with pre-allocated buckets)
+// - get hit                 (lookup with LRU promotion, key always present)
+// - get miss                (lookup cost when key is absent)
+// - peek                    (lookup without LRU promotion)
+// - erase                   (removal by key)
+// - eviction                (insert at capacity, forcing LRU eviction)
+// - contains                (key existence check)
+// - mixed workload          (interleaved put, get, and eviction)
+//
+// Benchmarks use std::unordered_map as a reference baseline.
+
 #include <iostream>
 #include <chrono>
-#include <string>
-#include <vector>
-#include <sstream>
 #include <cstddef>
+#include <unordered_map>
+#include <string>
 
 #include "LRUCache.h"
+#include "utils/Table.h"
 
-auto clock_now() {
-	return std::chrono::steady_clock::now();
+// returns elapsed microseconds for a callable
+template<typename F>
+auto duration(F func) {
+    auto start = std::chrono::steady_clock::now();
+    func();
+    auto end   = std::chrono::steady_clock::now();
+
+    return std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 }
 
-std::string center(const std::string& text, std::size_t width) {
-	if(text.size() >= width) {
-		return text;
-	}
-
-	auto left = (width - text.size()) / 2;
-	auto right = width - text.size() - left;
-
-	return std::string(left, ' ') + text + std::string(right, ' ');
-}
-
+// prevents the compiler from eliminating unused operations
 template<typename T>
-std::string format(const T& value, const std::string& suffix = "") {
-	std::ostringstream oss;
-	oss << value;
-
-	return oss.str() + suffix;
+inline void doNotOptimize(T* ptr) {
+#if defined(__GNUC__) || defined(__clang__)
+    asm volatile("" : : "r,m"(ptr) : "memory");
+#else
+    volatile T* v = ptr;
+    (void)v;
+#endif
 }
 
-std::string repeat(
-    const std::string& line,
-    std::size_t count)
-{
-    std::string lines;
-    
-    for(std::size_t i = 0; i < count; ++i) {
-        lines += line;
+// Put Without Reserve
+// measures insert cost including internal bucket allocation
+void putNoReserve() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
+
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
+
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>          lru(counts[i]);
+        std::unordered_map<int, int> map;
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j)
+                lru.put(static_cast<int>(j), static_cast<int>(j));
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j)
+                map.insert({static_cast<int>(j), static_cast<int>(j)});
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
     }
-    
-    return lines;
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Put - No Reserve",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
 }
 
-void border(
-    const std::string& left,
-    const std::string& middle,
-    const std::string& right,
-    const std::string& line,
-    const std::vector<std::size_t>& lengths)
-{
-	std::cout << left;
+// Put With Reserve
+// measures insert cost with pre-allocated buckets
+void putWithReserve() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
 
-	for(std::size_t i = 0; i < lengths.size(); ++i) {
-		std::cout << repeat(line, lengths[i]) << (i < lengths.size() - 1 ? middle : "");
-	}
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
 
-	std::cout << right << "\n";
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(counts[i]);
+        std::unordered_map<int, int> map;
+
+        map.reserve(counts[i]);
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j)
+                lru.put(static_cast<int>(j), static_cast<int>(j));
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j)
+                map.insert({static_cast<int>(j), static_cast<int>(j)});
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
+    }
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Put - With Reserve",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
 }
 
-void table_header(
-    const std::string& side,
-    const std::vector<std::string>& titles,
-    const std::vector<std::size_t>& lengths)
-{
-	if(titles.size() != lengths.size()) {
-		return;
-	}
+// Get Hit
+// measures lookup cost with LRU promotion — key always present
+void getHit() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
 
-	for(std::size_t i = 0; i < lengths.size(); ++i) {
-		std::cout << side
-		          << center(titles[i], lengths[i])
-		          << (i == lengths.size() - 1 ? side + "\n" : "");
-	}
-}
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
 
-void put_get() {
-	std::vector<std::size_t> caps = {100'000, 500'000, 1'000'000, 5'000'000, 10'000'000};
-	std::vector<long long> putDurations;
-	std::vector<long long> getDurations;
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(counts[i]);
+        std::unordered_map<int, int> map;
 
-	for(std::size_t run = 0; run < caps.size(); ++run) {
-		LRUCache<std::size_t, std::size_t> lru(caps[run]);
-		lru.reserve(caps[run]);
-
-		auto putStart = clock_now();
-
-		for(std::size_t i = 0; i < caps[run]; ++i) {
-			lru.put(i, i);
-		}
-
-		auto putEnd = clock_now();
-
-		auto putDuration = std::chrono::duration_cast<std::chrono::milliseconds>(putEnd - putStart).count();
-
-		putDurations.push_back(putDuration);
-
-		auto getStart = clock_now();
-
-		for(std::size_t i = 0; i < caps[run]; ++i) {
-			lru.get(i);
-		}
-
-		auto getEnd = clock_now();
-
-		auto getDuration = std::chrono::duration_cast<std::chrono::milliseconds>(getEnd - getStart).count();
-
-		getDurations.push_back(getDuration);
-
-	}
-
-	border("┌", "─", "┐", "─", {48});
-	table_header("│", {"LRU Cache Put/Get Benchmark"}, {48});
-	border("├", "┬", "┤", "─", {18, 14, 14});
-	table_header("│", {"Capacity", "Put", "Get"}, {18, 14, 14});
-	border("├", "┼", "┤", "─", {18, 14, 14});
-
-	for(std::size_t i = 0; i < caps.size(); ++i) {
-		std::cout << std::left
-		          << "│"
-		          << center(format(caps[i]), 18)
-		          << "│"
-		          << center(format(putDurations[i], " ms"), 14)
-		          << "│"
-		          << center(format(getDurations[i], " ms"), 14)
-		          << "│\n";
-	}
-
-	border("└", "┴", "┘", "─", {18, 14, 14});
-
-    std::cout << "\n";
-}
-
-void mixed_workload() {
-    constexpr std::size_t operations = 1'000'000;
-    std::vector<std::size_t> caps = {100'000, 200'000, 300'000, 400'000, 500'000};
-    std::vector<std::size_t> divs = {2, 5, 10, 4, 20};
-    
-    std::vector<long long> durations;
-    
-    for(std::size_t run = 0; run <caps.size(); ++run) {
-        LRUCache<int, int> lru(caps[run]);
-        
-        for(std::size_t i = 0; i < caps[run]; ++i) {
-            lru.put(i, i);
+        for (std::size_t j = 0; j < counts[i]; ++j) {
+            lru.put(static_cast<int>(j), static_cast<int>(j));
+            map.insert({static_cast<int>(j), static_cast<int>(j)});
         }
-        
-        auto start = clock_now();
-        
-        for(std::size_t i = 0; i < operations; ++i) {
-            if(i % divs[run] == 0) {
-                lru.put(caps[run] + i, i);
-            } else {
-                lru.get(i % caps[run]);
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                auto* val = lru.get(static_cast<int>(j));
+                doNotOptimize(val);
             }
-        }
-        
-        auto end = clock_now();
-        
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        
-        durations.push_back(duration);
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                auto it = map.find(static_cast<int>(j));
+                doNotOptimize(&it->second);
+            }
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
     }
-    
-    border("┌", "─", "┐", "─", {54});
-	table_header("│", {"LRU Cache Mixed Workload Benchmark"}, {54});
-	border("├", "┬", "┤", "─", {18, 20, 14});
-	table_header("│", {"Capacity", "Operations", "Duration"}, {18, 20, 14});
-	border("├", "┼", "┤", "─", {18, 20, 14});
 
-	for(std::size_t i = 0; i < caps.size(); ++i) {
-		double putRate = (1.00 / static_cast<double>(divs[i])) * 100;
-		double getRate = 100.00 - putRate;
-		
-		std::string operation = format(putRate, "% put") + " " + format(getRate, "% get");
-		
-		std::cout << std::left
-		          << "│"
-		          << center(format(caps[i]), 18)
-		          << "│"
-		          << center(operation, 20)
-		          << "│"
-		          << center(format(durations[i], " ms"), 14)
-		          << "│\n";
-	}
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
 
-	border("└", "┴", "┘", "─", {18, 20, 14});
-    
+    Table::table(
+        "Get - Hit",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
 }
 
+// Get Miss
+// measures lookup cost when key is always absent
+void getMiss() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
+
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
+
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(counts[i]);
+        std::unordered_map<int, int> map;
+
+        for (std::size_t j = 0; j < counts[i]; ++j) {
+            lru.put(static_cast<int>(j), static_cast<int>(j));
+            map.insert({static_cast<int>(j), static_cast<int>(j)});
+        }
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = counts[i]; j < counts[i] * 2; ++j) {
+                auto* val = lru.get(static_cast<int>(j));
+                doNotOptimize(val);
+            }
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = counts[i]; j < counts[i] * 2; ++j) {
+                auto it = map.find(static_cast<int>(j));
+                (void)it;
+            }
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
+    }
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Get - Miss",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
+}
+
+// Peek
+// measures lookup cost without LRU promotion
+void peek() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
+
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
+
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(counts[i]);
+        std::unordered_map<int, int> map;
+
+        for (std::size_t j = 0; j < counts[i]; ++j) {
+            lru.put(static_cast<int>(j), static_cast<int>(j));
+            map.insert({static_cast<int>(j), static_cast<int>(j)});
+        }
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                const auto* val = lru.peek(static_cast<int>(j));
+                doNotOptimize(const_cast<int*>(val));
+            }
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                auto it = map.find(static_cast<int>(j));
+                doNotOptimize(&it->second);
+            }
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
+    }
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Peek",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
+}
+
+// Erase
+// measures removal cost by key
+void erase() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
+
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
+
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(counts[i]);
+        std::unordered_map<int, int> map;
+
+        for (std::size_t j = 0; j < counts[i]; ++j) {
+            lru.put(static_cast<int>(j), static_cast<int>(j));
+            map.insert({static_cast<int>(j), static_cast<int>(j)});
+        }
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j)
+                (void)lru.erase(static_cast<int>(j));
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j)
+                map.erase(static_cast<int>(j));
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
+    }
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Erase",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
+}
+
+// Eviction
+// measures insert cost at full capacity, forcing LRU eviction every insert
+void eviction() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
+
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
+
+    static constexpr std::size_t CAPACITY = 1'000;
+
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(CAPACITY);
+        std::unordered_map<int, int> map;
+
+        for (std::size_t j = 0; j < CAPACITY; ++j) {
+            lru.put(static_cast<int>(j), static_cast<int>(j));
+            map.insert({static_cast<int>(j), static_cast<int>(j)});
+        }
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = CAPACITY; j < CAPACITY + counts[i]; ++j)
+                lru.put(static_cast<int>(j), static_cast<int>(j));
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = CAPACITY; j < CAPACITY + counts[i]; ++j) {
+                if (map.size() >= CAPACITY)
+                    map.erase(map.begin());
+                map.insert({static_cast<int>(j), static_cast<int>(j)});
+            }
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
+    }
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Eviction  (capacity = 1000)",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
+}
+
+// Contains
+// measures key existence check cost
+void contains() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
+
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
+
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(counts[i]);
+        std::unordered_map<int, int> map;
+
+        for (std::size_t j = 0; j < counts[i]; ++j) {
+            lru.put(static_cast<int>(j), static_cast<int>(j));
+            map.insert({static_cast<int>(j), static_cast<int>(j)});
+        }
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                bool found = lru.contains(static_cast<int>(j));
+                doNotOptimize(&found);
+            }
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                bool found = map.contains(static_cast<int>(j));
+                doNotOptimize(&found);
+            }
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
+    }
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Contains",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
+}
+
+// Mixed Workload
+// measures interleaved put, get, and eviction under realistic access patterns
+void mixedWorkload() {
+    std::vector<long> lru_durations;
+    std::vector<long> map_durations;
+
+    std::vector<std::size_t> counts = {
+        100'000,
+        200'000,
+        400'000,
+        800'000
+    };
+
+    static constexpr std::size_t CAPACITY = 1'000;
+
+    for (std::size_t i = 0; i < counts.size(); ++i) {
+        LRUCache<int, int>           lru(CAPACITY);
+        std::unordered_map<int, int> map;
+
+        auto lru_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                int key = static_cast<int>(j % (CAPACITY * 2));
+
+                lru.put(key, static_cast<int>(j));
+
+                auto* val = lru.get(key / 2);
+                doNotOptimize(val);
+            }
+        });
+
+        auto map_duration = duration([&] {
+            for (std::size_t j = 0; j < counts[i]; ++j) {
+                int key = static_cast<int>(j % (CAPACITY * 2));
+
+                if (map.size() >= CAPACITY)
+                    map.erase(map.begin());
+
+                map.insert_or_assign(key, static_cast<int>(j));
+
+                auto it = map.find(key / 2);
+                if (it != map.end())
+                    doNotOptimize(&it->second);
+            }
+        });
+
+        lru_durations.push_back(lru_duration.count());
+        map_durations.push_back(map_duration.count());
+    }
+
+    std::vector<std::vector<std::string>> data{
+        Table::convert(counts),
+        Table::convert(lru_durations, "us"),
+        Table::convert(map_durations, "us")
+    };
+
+    Table::table(
+        "Mixed Workload  (capacity = 1000)",
+        { "Count", "LRUCache", "unordered_map" },
+        data, 56);
+}
+
+// Entry Point
 int main() {
-	put_get();
-	
-	mixed_workload();
-	return 0;
-}
+    putNoReserve();
+    putWithReserve();
+    getHit();
+    getMiss();
+    peek();
+    erase();
+    eviction();
+    contains();
+    mixedWorkload();
 
+    return 0;
+}

@@ -1,365 +1,334 @@
+// LRUCache Test Suite
+// Verifies correctness of the LRU cache container through unit tests:
+//
+// - lifecycle (default and move construction)
+// - cache operations (put, erase, clear)
+// - cache lookup (get, peek, contains)
+// - capacity management (resize)
+// - element access (keys, mostRecentKey, leastRecentKey)
+// - cache statistics (hitCount, missCount, hitRate, resetStats)
+// - capacity and size tracking
+// - state (empty)
+//
+// These tests validate the correctness and expected behavior of LRUCache.
+
 #include <iostream>
 #include <cassert>
 #include <string>
 #include <vector>
-#include <cmath>
-#include <cstddef>
 
 #include "LRUCache.h"
 
-void basic_insertion() {
-	LRUCache<int, std::string> lru(10);
-
-	std::vector<int> keys = {1, 2, 3};
-	std::vector<std::string> values = {"Apple", "Banana", "Mango"};
-
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
-
-	auto* item1 = lru.get(keys[0]);
-	auto* item3 = lru.get(keys[2]);
-
-	assert(item1 != nullptr);
-	assert(*item1 == values[0]);
-
-	assert(item3 != nullptr);
-	assert(*item3 == values[2]);
-
-	std::cout << "\n[PASS] Basic Insertion Test\n";
+void print(const std::string title) {
+	std::cout << "[PASS] " << title << "\n";
 }
 
-void lru_ordering() {
-	LRUCache<int, std::string> lru(10);
+// Lifecycle Test
+// Verifies default and move construction.
+void lifecycle() {
+	std::cout << "Lifecycle Test\n";
 
-	std::vector<int> keys = {1, 2, 3};
-	std::vector<std::string> values = {"Scissor", "Paper", "Rock"};
+	LRUCache<int, int> lru1(10);
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
+	lru1.put(1, 10);
+	lru1.put(2, 20);
 
-	lru.get(keys[1]);
+	assert(lru1.size() == 2);
+	assert(lru1.capacity() == 10);
+	assert(lru1.contains(2));
 
-	auto* most = lru.mostRecentKey();
+	print("Default Construction");
 
-	assert(most != nullptr);
-	assert(*most == keys[1]);
+	LRUCache<int, int> lru3(std::move(lru1));
 
-	auto* least = lru.leastRecentKey();
+	lru3.put(3, 30);
 
-	assert(least != nullptr);
-	assert(*least == keys[0]);
+	assert(lru1.size() == 0);
+	assert(lru1.capacity() == 0);
+	assert(lru1.empty());
+	assert(lru3.size() == 3);
+	assert(lru3.capacity() == 10);
 
-	std::cout << "\n[PASS] LRU Ordering Test\n";
+	print("Move Construction");
+
+	std::cout << "\n";
 }
 
-void eviction() {
-	LRUCache<int, int> lru(10);
+// Cache Operations Test
+// Verifies put, erase, and clear behavior.
+void cacheOperations() {
+	std::cout << "Cache Operation Test\n";
 
-	std::vector<int> keys = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-	std::vector<int> values = {11, 22, 33, 44, 55, 66, 77, 88, 99, 100, 111};
+	LRUCache<int, double> lru(10);
 
-	for(std::size_t i = 0; i < lru.capacity(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
+	lru.put(10, 10.34);
+	lru.put(98, 98.21);
+	lru.put(45, 0.0001);
 
-	lru.put(keys[10], values[10]);
+	assert(lru.size() == 3);
+	assert(lru.contains(10));
+	assert(lru.contains(45));
 
-	auto* key = lru.leastRecentKey();
+	lru.put(10, 99.99);
 
-	assert(key != nullptr);
-	assert(*key == keys[1]);
+	assert(lru.size() == 3);
+	assert(*lru.peek(10) == 99.99);
 
-	assert(lru.get(keys[0]) == nullptr);
+	print("Put");
 
-	std::cout << "\n[PASS] Eviction Test\n";
-}
+	assert(lru.erase(98));
+	assert(!lru.erase(100));
+	assert(lru.size() == 2);
 
-void get_key() {
-    LRUCache<int, std::string> lru(10);
-
-	std::vector<int> keys = {-1, -2, -3, -4, -5};
-	std::vector<std::string> values = {"Fire", "Air", "Earth", "Water", "Light"};
-
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
-	
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		auto* item = lru.get(keys[i]);
-		
-		assert(item != nullptr);
-		assert(*item == values[i]);
-	}
-	
-	std::cout << "\n[PASS] Get Key Test\n";
-}
-
-void update_key() {
-	LRUCache<int, std::string> lru(10);
-
-	std::vector<std::string> values = {"Car", "Ship", "Planes"};
-	std::vector<int> keys = {1, 2, 3};
-
-	lru.put(keys[2], values[0]);
-	lru.put(keys[0], values[1]);
-	lru.put(keys[2], values[2]);
-
-	auto* item = lru.get(keys[2]);
-
-	assert(item != nullptr);
-	assert(*item == values[2]);
-
-	auto* most = lru.mostRecentKey();
-
-	assert(most != nullptr);
-	assert(*most == keys[2]);
-
-	std::cout << "\n[PASS] Update Key Test\n";
-}
-
-void erase_key() {
-	LRUCache<int, std::string> lru(10);
-
-	std::vector<int> keys = {21, 34, 87};
-	std::vector<std::string> values = {"Cat", "Dog", "Mouse"};
-
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
-
-	lru.erase(keys[1]);
-
-	auto* item = lru.get(keys[1]);
-
-	assert(item == nullptr);
-
-	assert(lru.size() == keys.size() - 1);
-
-	std::cout << "\n[PASS] Erase Key Test\n";
-}
-
-void clear_keys() {
-	LRUCache<int, std::string> lru(10);
-
-	std::vector<int> keys = {312, 809, 69, 1, -1};
-	std::vector<std::string> values = {"Smartphone", "Laptop", "Tablet", "Computer", "Smartwatch"};
-
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
-
-	assert(!lru.empty());
+	print("Erase");
 
 	lru.clear();
 
+	assert(lru.capacity() == 10);
 	assert(lru.empty());
-	assert(lru.size() == 0);
 
-	std::cout << "\n[PASS] Clear Keys Test\n";
+	print("Clear");
+
+	std::cout << "\n";
 }
 
+// Cache Lookup Test
+// Verifies get, peek, and contains behavior.
+void cacheLookup() {
+	std::cout << "Cache Lookup Test\n";
 
-void contain_key() {
 	LRUCache<int, std::string> lru(10);
 
-	std::vector<int> keys = {32, 89, 6, 971, 23};
-	std::vector<std::string> values = {"Coke", "Sprite", "Pepsi", "Nestea", "Dew"};
+	lru.put(21, "apple");
+	lru.put(98, "banana");
+	lru.put(-45, "mango");
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
+	auto get1 = lru.get(21);
+	auto get2 = lru.get(100);
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		assert(lru.contain(keys[i]));
-	}
+	assert(get1 != nullptr);
+	assert(*get1 == "apple");
+	assert(get2 == nullptr);
 
-	assert(!lru.contain(99999));
+	print("Get");
 
-	std::cout << "\n[PASS] Contain Key Test\n";
+	auto peek1 = lru.peek(98);
+	auto peek2 = lru.peek(-45);
+	auto peek3 = lru.peek(100);
+
+	assert(peek1 != nullptr);
+	assert(*peek1 == "banana");
+	assert(peek2 != nullptr);
+	assert(*peek2 == "mango");
+	assert(peek3 == nullptr);
+
+	assert(*lru.mostRecentKey() == 21);
+
+	print("Peek");
+
+	assert(lru.contains(98));
+	assert(!lru.contains(100));
+
+	print("Contains");
+
+	std::cout << "\n";
 }
 
-void peek_key() {
-	LRUCache<int, double> lru(10);
+// Capacity Management Test
+// Verifies resize behavior and its error cases.
+void capacityManagement() {
+	std::cout << "Capacity Management Test\n";
 
-	std::vector<int> keys = {22, 189, 63, 91, -7, -22, 99, 0, 12, 999};
-	std::vector<double> values = {1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09, 1.10};
+	LRUCache<char, int> lru(10);
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
+	lru.put('x', 21);
+	lru.put('y', 33);
+	lru.put('z', 55);
 
-	auto* peek = lru.peek(keys[5]);
+	assert(lru.capacity() == 10);
 
-	assert(peek != nullptr);
-	assert(*peek == values[5]);
+	lru.resize(20);
 
-	auto* most = lru.mostRecentKey();
+	assert(lru.capacity() == 20);
 
-	assert(most != nullptr);
-	assert(*most == keys[9]);
+	try {
+		lru.resize(0);
+		assert(false);
+	} catch (std::invalid_argument&) {}
 
-	std::cout << "\n[PASS] Peek Test\n";
+	try {
+		lru.resize(2);
+		assert(false);
+	} catch (std::length_error&) {}
+
+	print("Resize");
+
+	std::cout << "\n";
 }
 
-void cache_statistics() {
-	LRUCache<int, char> lru(10);
+// Element Access Test
+// Verifies keys(), mostRecentKey(), and leastRecentKey() behavior,
+// including that peek() does not affect LRU ordering.
+void elementAccess() {
+	std::cout << "Element Access\n";
 
-	std::vector<int> keys = {2, 567, -7, 191, -1000};
-	std::vector<int> xKeys = {1, 872, 0, -78};
-	std::vector<char> values = {'A', 'C', 'E', 'Z', 'Q'};
+	LRUCache<char, double> lru(10);
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
+	lru.put('a', 1.01);
+	lru.put('b', 2.02);
+	lru.put('c', 3.03);
+	lru.put('d', 4.04);
+	lru.put('e', 5.05);
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.get(keys[i]);
-	}
+	std::vector<char> keys = lru.keys();
 
-	assert(lru.hitCount() == keys.size());
+	assert(keys[1] == 'd');
+	assert(keys[3] == 'b');
+	assert(keys.size() == lru.size());
+
+	print("Keys");
+
+	assert(*lru.mostRecentKey() == 'e');
+
+	(void)lru.get('a');
+	(void)lru.peek('c');
+
+	assert(*lru.mostRecentKey() == 'a');
+
+	(void)lru.get('c');
+
+	assert(*lru.mostRecentKey() == 'c');
+
+	print("Most Recent Key");
+
+	assert(*lru.leastRecentKey() == 'b');
+
+	(void)lru.peek('b');
+
+	assert(*lru.leastRecentKey() == 'b');
+
+	(void)lru.get('b');
+	(void)lru.get('c');
+	(void)lru.get('d');
+
+	assert(*lru.leastRecentKey() == 'e');
+
+	print("Least Recent Key");
+
+	std::cout << "\n";
+}
+
+// Cache Statistics Test
+// Verifies hitCount, missCount, hitRate, and resetStats behavior.
+void cacheStatistics() {
+	std::cout << "Cache Statistics\n";
+
+	LRUCache<char, std::string> lru(10);
+
+	lru.put('x', "xox");
+	lru.put('y', "yoy");
+	lru.put('z', "zoz");
+
+	assert(lru.hitCount() == 0);
+
+	(void)lru.get('x');
+	(void)lru.get('z');
+
+	assert(lru.hitCount() == 2);
+
+	print("Hit Count");
+
 	assert(lru.missCount() == 0);
 
-	for(std::size_t i = 0; i < xKeys.size(); ++i) {
-		lru.get(xKeys[i]);
-	}
+	(void)lru.get('y');
+	(void)lru.get('a');
+	(void)lru.get('b');
 
-	int total = lru.hitCount() + lru.missCount();
-	double hitRate = (static_cast<double>(lru.hitCount()) / static_cast<double>(total)) * 100.0;
+	assert(lru.missCount() == 2);
+	assert(lru.hitCount() == 3);
 
-	assert(lru.hitCount() == keys.size());
-	assert(lru.missCount() == xKeys.size());
+	print("Miss Count");
 
-	assert(std::abs(lru.hitRate() - hitRate) < 0.0001);
+	double total = static_cast<double>(lru.hitCount() + lru.missCount());
+	double rate  = (static_cast<double>(lru.hitCount()) / total) * 100.0;
 
-	std::cout << "\n[PASS] Cache Statistics Test\n";
+	assert(lru.hitRate() == rate);
+
+	print("Hit Rate");
+
+	lru.resetStats();
+
+	assert(lru.hitCount() == 0);
+	assert(lru.missCount() == 0);
+	assert(lru.hitRate() == 0.0);
+
+	print("Reset Stats");
+
+	std::cout << "\n";
 }
 
-void cache_reserve() {
-	std::size_t cap = 10;
-	LRUCache<int, std::string> lru(cap);
+// Capacity Test
+// Verifies capacity tracking, eviction at capacity limit, and size changes.
+void capacity() {
+	std::cout << "Capacity\n";
 
-	lru.reserve(100);
+	LRUCache<int, int> lru(1);
 
-	assert(lru.capacity() == cap);
+	assert(lru.capacity() == 1);
+
+	lru.put(1, 500);
+	lru.put(2, 1000);
+
+	assert(lru.capacity() == 1);
+	assert(!lru.contains(1));
+
+	lru.resize(5);
+
+	assert(lru.capacity() == 5);
+
+	print("Capacity");
+
+	assert(lru.size() == 1);
+
+	lru.put(3, 1500);
+
+	assert(lru.size() == 2);
+
+	lru.clear();
+
 	assert(lru.size() == 0);
-	assert(lru.empty());
 
-	std::vector<int> keys = {-2, 888, 100};
-	std::vector<std::string> values = {"Black", "White", "Pink"};
+	print("Size");
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
-
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		auto* item = lru.get(keys[i]);
-
-		assert(item != nullptr);
-		assert(*item == values[i]);
-	}
-
-	std::cout << "\n[PASS] Cache Reserve Test\n";
+	std::cout << "\n";
 }
 
-void capacity_state() {
-	std::size_t cap = 1;
-	LRUCache<int, std::string> lru(cap);
+// State Test
+// Verifies empty() reflects the correct state.
+void state() {
+	std::cout << "State\n";
 
-	std::vector<int> keys = {92, 869, 68, -971, -23};
-	std::vector<std::string> values = {"Earth", "Mars", "Neptune", "Mercury", "Jupiter"};
+	LRUCache<int, int> lru(10);
 
 	assert(lru.empty());
 
-	for(std::size_t i = 0; i < keys.size(); ++i) {
-		lru.put(keys[i], values[i]);
-	}
-
-	assert(lru.capacity() == cap);
-	assert(lru.size() == cap);
-
-	assert(*lru.mostRecentKey() == keys[keys.size() - 1]);
-	assert(*lru.leastRecentKey() == keys[keys.size() - 1]);
+	lru.put(21, 780);
 
 	assert(!lru.empty());
 
-	std::cout << "\n[PASS] Capacity & State Test\n";
-}
-
-void move_semantics() {
-	{
-		LRUCache<int, char> original(10);
-
-		std::vector<int> keys = {-2, 3367, -87, 8, -100};
-		std::vector<char> values = {'i', 'l', 'y', 's', 'm'};
-
-		for(std::size_t i = 0; i < keys.size(); ++i) {
-			original.put(keys[i], values[i]);
-		}
-
-		LRUCache<int, char> moved(std::move(original));
-
-		for(std::size_t i = 0; i < keys.size(); ++i) {
-			auto* item = moved.get(keys[i]);
-
-			assert(item != nullptr);
-			assert(*item == values[i]);
-		}
-	}
-
-	{
-		LRUCache<int, char> source(10);
-
-		std::vector<int> keys = {-2, 3367, -87, 8, -100};
-		std::vector<char> values = {'i', 'l', 'y', 's', 'm'};
-
-		for(std::size_t i = 0; i < keys.size(); ++i) {
-			source.put(keys[i], values[i]);
-		}
-
-		LRUCache<int, char> destination(5);
-		destination = std::move(source);
-
-		for(std::size_t i = 0; i < keys.size(); ++i) {
-			auto* item = destination.get(keys[i]);
-
-			assert(item != nullptr);
-			assert(*item == values[i]);
-		}
-	}
-	
-	std::cout << "\n[PASS] Move Semantics Test\n";
+	print("Empty");
 }
 
 int main() {
-	basic_insertion();
+	lifecycle();
+	cacheOperations();
+	cacheLookup();
+	capacityManagement();
+	elementAccess();
+	cacheStatistics();
+	capacity();
+	state();
 
-	lru_ordering();
-
-	eviction();
-    
-    get_key();
-    
-	update_key();
-
-	erase_key();
-
-	clear_keys();
-
-	contain_key();
-
-	peek_key();
-
-	cache_statistics();
-
-	cache_reserve();
-
-	capacity_state();
-
-	move_semantics();
-	
-	std::cout << "\nAll Test Completed\n";
 	return 0;
 }
 
