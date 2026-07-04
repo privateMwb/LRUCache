@@ -6,7 +6,7 @@
 // - moved-from object state
 // - returning a cache from a function
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 using namespace CachePro;
 
@@ -18,10 +18,8 @@ LRUCache<std::string, int> buildSessionCache() {
     return cache;
 }
 
-int main() {
-    mainTitle("\nMove Semantics Examples");
-    borderLine();
-
+static void run_examples() {
+    
     // Demonstrates move construction.
     setTitle("Move Construction");
 
@@ -55,8 +53,6 @@ int main() {
 
     std::cout << "sessions.size()           : " << sessions.size() << "\n";
     std::cout << "sessions.get(\"session:1\") : " << *sessions.get("session:1") << "\n";
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

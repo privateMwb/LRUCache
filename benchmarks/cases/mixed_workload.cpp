@@ -9,8 +9,8 @@
 // - 80/20 get/put ratio with Zipfian (hot-key) access
 // - 50/50 get/put ratio with a small cache (heavy eviction pressure)
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 #include <random>
 #include <vector>
@@ -161,9 +161,7 @@ static void bench_workload_50_50_small_capacity() {
 }
 
 // Executes all mixed workload benchmark cases.
-void run_mixed_workload_benchmarks() {
-    setHeader("Mixed Workload Benchmarks");
-
+static void run_benchmarks() {
     bench_workload_80_20_uniform();
     std::cout << "\n";
 
@@ -174,6 +172,6 @@ void run_mixed_workload_benchmarks() {
     std::cout << "\n";
 
     bench_workload_50_50_small_capacity();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();

@@ -6,13 +6,11 @@
 // - order changes after access
 // - inspecting an empty cache
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 using namespace CachePro;
 
-int main() {
-    mainTitle("\nOrder Inspection Examples");
-    borderLine();
+static void run_examples() {
 
     // Demonstrates listing keys from most- to least-recently-used.
     setTitle("Listing Keys In Recency Order");
@@ -54,8 +52,6 @@ int main() {
     std::cout << "keys().size()    : " << empty.keys().size() << "\n";
     std::cout << "mostRecentKey()  : " << (empty.mostRecentKey() ? "found" : "nullptr") << "\n";
     std::cout << "leastRecentKey() : " << (empty.leastRecentKey() ? "found" : "nullptr") << "\n";
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

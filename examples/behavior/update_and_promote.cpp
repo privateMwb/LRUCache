@@ -6,13 +6,11 @@
 // - in-place construction with emplace()
 // - updating existing entries with emplace()
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 using namespace CachePro;
 
-int main() {
-    mainTitle("\nUpdate And Promotion Examples");
-    borderLine();
+static void run_examples() {
 
     // Demonstrates updating an existing value with put().
     setTitle("Put Updates Existing Value");
@@ -60,8 +58,6 @@ int main() {
 
     std::cout << "get(1)          : " << *tags.get(1) << "\n";
     std::cout << "most recent key : " << *tags.mostRecentKey() << "\n";
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

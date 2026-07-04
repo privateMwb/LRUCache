@@ -8,8 +8,8 @@
 // - Single eviction cost
 // - Repeated fill -> clear -> refill cycles
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 using namespace CachePro;
 
@@ -92,7 +92,7 @@ static void bench_fill_clear_cycle() {
         for (int i = 0; i < 500; ++i) c.put(i, i);
         doNotOptimize(c);
     };
-    BENCH("CachePro fill/clear/refill", SMALL, cp);
+    BENCH("CachePro fill/clear/refill", 1000, cp);
 
     auto nv = [&] {
         NaiveLRU<int, int> c(500);
@@ -101,13 +101,11 @@ static void bench_fill_clear_cycle() {
         for (int i = 0; i < 500; ++i) c.put(i, i);
         doNotOptimize(c);
     };
-    BENCH("Naive LRU fill/clear/refill", SMALL, nv);
+    BENCH("Naive LRU fill/clear/refill", 1000, nv);
 }
 
 // Executes all eviction benchmark cases.
-void run_eviction_benchmarks() {
-    setHeader("Eviction Benchmarks");
-
+static void run_benchmarks() {
     bench_eviction_steady_state_small();
     std::cout << "\n";
 
@@ -118,6 +116,6 @@ void run_eviction_benchmarks() {
     std::cout << "\n";
 
     bench_fill_clear_cycle();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();

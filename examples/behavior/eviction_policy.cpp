@@ -6,13 +6,11 @@
 // - promotion through get()
 // - predicting the next eviction candidate
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 using namespace CachePro;
 
-int main() {
-    mainTitle("\nEviction Policy Examples");
-    borderLine();
+static void run_examples() {
 
     // Demonstrates eviction after exceeding capacity.
     setTitle("Fill To Capacity");
@@ -60,8 +58,6 @@ int main() {
 
     std::cout << "leastRecentKey() : " << *preview.leastRecentKey()
               << "  (will be evicted next)\n";
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

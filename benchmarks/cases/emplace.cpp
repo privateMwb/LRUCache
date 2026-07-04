@@ -8,8 +8,8 @@
 // - emplace() with multi-argument construction
 // - emplace() into a full cache
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 #include <string>
 
@@ -22,21 +22,21 @@ static void bench_emplace_new_vs_put_temporary() {
         for (int i = 0; i < 1000; ++i) c.emplace(i, "value");
         doNotOptimize(c);
     };
-    BENCH("CachePro emplace new", SMALL, em);
+    BENCH("CachePro emplace new", 1000, em);
 
     auto pt = [&] {
         LRUCache<int, std::string> c(2000);
         for (int i = 0; i < 1000; ++i) c.put(i, std::string("value"));
         doNotOptimize(c);
     };
-    BENCH("CachePro put (temporary)", SMALL, pt);
+    BENCH("CachePro put (temporary)", 1000, pt);
 
     auto nv = [&] {
         NaiveLRU<int, std::string> c(2000);
         for (int i = 0; i < 1000; ++i) c.put(i, std::string("value"));
         doNotOptimize(c);
     };
-    BENCH("Naive LRU put (temporary)", SMALL, nv);
+    BENCH("Naive LRU put (temporary)", 1000, nv);
 }
 
 // Measures updating an existing entry using emplace().
@@ -72,14 +72,14 @@ static void bench_emplace_multi_arg() {
         for (int i = 0; i < 1000; ++i) c.emplace(i, i, i + 1, i + 2);
         doNotOptimize(c);
     };
-    BENCH("CachePro emplace multi-arg", SMALL, em);
+    BENCH("CachePro emplace multi-arg", 1000, em);
 
     auto pt = [&] {
         LRUCache<int, Point> c(2000);
         for (int i = 0; i < 1000; ++i) c.put(i, Point(i, i + 1, i + 2));
         doNotOptimize(c);
     };
-    BENCH("CachePro put (constructed temp)", SMALL, pt);
+    BENCH("CachePro put (constructed temp)", 1000, pt);
 }
 
 // Measures emplace() while the cache remains at full capacity,
@@ -107,9 +107,7 @@ static void bench_emplace_full_eviction() {
 }
 
 // Executes all emplace benchmark cases.
-void run_emplace_benchmarks() {
-    setHeader("Emplace Benchmarks");
-
+static void run_benchmarks() {
     bench_emplace_new_vs_put_temporary();
     std::cout << "\n";
 
@@ -120,6 +118,6 @@ void run_emplace_benchmarks() {
     std::cout << "\n";
 
     bench_emplace_full_eviction();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();

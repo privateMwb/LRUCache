@@ -9,8 +9,8 @@
 // - put() updating an existing key
 // - put() at full capacity
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 #include <string>
 
@@ -24,7 +24,7 @@ static void bench_put_copy() {
             c.put(i, i);
         doNotOptimize(c);
     };
-    BENCH("CachePro put copy", SMALL, cp);
+    BENCH("CachePro put copy", 1000, cp);
 
     auto nv = [&] {
         NaiveLRU<int, int> c(2000);
@@ -32,7 +32,7 @@ static void bench_put_copy() {
             c.put(i, i);
         doNotOptimize(c);
     };
-    BENCH("Naive LRU put copy", SMALL, nv);
+    BENCH("Naive LRU put copy", 1000, nv);
 }
 
 // Measures put() using moved values.
@@ -43,7 +43,7 @@ static void bench_put_move() {
             c.put(i, std::string("value") + std::to_string(i));
         doNotOptimize(c);
     };
-    BENCH("CachePro put move", SMALL, cp);
+    BENCH("CachePro put move", 1000, cp);
 
     auto nv = [&] {
         NaiveLRU<int, std::string> c(2000);
@@ -51,7 +51,7 @@ static void bench_put_move() {
             c.put(i, std::string("value") + std::to_string(i));
         doNotOptimize(c);
     };
-    BENCH("Naive LRU put move", SMALL, nv);
+    BENCH("Naive LRU put move", 1000, nv);
 }
 
 // Measures put() when updating an existing key.
@@ -103,9 +103,7 @@ static void bench_put_full_eviction() {
 }
 
 // Runs all put benchmarks.
-void run_put_benchmarks() {
-    setHeader("Put Benchmarks");
-
+static void run_benchmarks() {
     bench_put_copy();
     std::cout << "\n";
 
@@ -116,6 +114,6 @@ void run_put_benchmarks() {
     std::cout << "\n";
 
     bench_put_full_eviction();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();

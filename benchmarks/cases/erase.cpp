@@ -9,8 +9,8 @@
 // - Erasing the least-recently-used (LRU) entry
 // - Repeated erase -> reinsert cycles
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 using namespace CachePro;
 
@@ -22,7 +22,7 @@ static void bench_erase_existing() {
         bool ok = c.erase(500);
         doNotOptimize(ok);
     };
-    BENCH("CachePro erase existing", SMALL, cp);
+    BENCH("CachePro erase existing", 1000, cp);
 
     auto nv = [&] {
         NaiveLRU<int, int> c(1000);
@@ -30,7 +30,7 @@ static void bench_erase_existing() {
         bool ok = c.erase(500);
         doNotOptimize(ok);
     };
-    BENCH("Naive LRU erase existing", SMALL, nv);
+    BENCH("Naive LRU erase existing", 1000, nv);
 }
 
 // Measures the cost of attempting to erase a key that does not exist.
@@ -62,7 +62,7 @@ static void bench_erase_mru() {
         bool ok = c.erase(999);   // Last inserted entry is the MRU.
         doNotOptimize(ok);
     };
-    BENCH("CachePro erase MRU", SMALL, cp);
+    BENCH("CachePro erase MRU", 1000, cp);
 
     auto nv = [&] {
         NaiveLRU<int, int> c(1000);
@@ -70,7 +70,7 @@ static void bench_erase_mru() {
         bool ok = c.erase(999);
         doNotOptimize(ok);
     };
-    BENCH("Naive LRU erase MRU", SMALL, nv);
+    BENCH("Naive LRU erase MRU", 1000, nv);
 }
 
 // Measures the cost of erasing the current least-recently-used entry.
@@ -81,7 +81,7 @@ static void bench_erase_lru() {
         bool ok = c.erase(0);   // First inserted entry is the LRU.
         doNotOptimize(ok);
     };
-    BENCH("CachePro erase LRU", SMALL, cp);
+    BENCH("CachePro erase LRU", 1000, cp);
 
     auto nv = [&] {
         NaiveLRU<int, int> c(1000);
@@ -89,7 +89,7 @@ static void bench_erase_lru() {
         bool ok = c.erase(0);
         doNotOptimize(ok);
     };
-    BENCH("Naive LRU erase LRU", SMALL, nv);
+    BENCH("Naive LRU erase LRU", 1000, nv);
 }
 
 // Measures repeated erase -> reinsert cycles.
@@ -117,9 +117,7 @@ static void bench_erase_reinsert_cycle() {
 }
 
 // Executes all erase benchmark cases.
-void run_erase_benchmarks() {
-    setHeader("Erase Benchmarks");
-
+static void run_benchmarks() {
     bench_erase_existing();
     std::cout << "\n";
 
@@ -133,6 +131,6 @@ void run_erase_benchmarks() {
     std::cout << "\n";
 
     bench_erase_reinsert_cycle();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();

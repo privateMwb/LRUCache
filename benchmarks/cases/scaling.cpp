@@ -8,8 +8,8 @@
 // - Steady-state get() performance
 // - Steady-state put() performance with continuous eviction
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 using namespace CachePro;
 
@@ -48,32 +48,32 @@ static void bench_scaling_get() {
     LRUCache<int, int> c1k(1'000);
     for (int i = 0; i < 1'000; ++i) c1k.put(i, i);
     auto cp1k = [&] { doNotOptimize(c1k.get(500)); };
-    BENCH("CachePro get @1K", 1000, cp1k);
+    BENCH("CachePro get @1K", LARGE, cp1k);
 
     LRUCache<int, int> c100k(100'000);
     for (int i = 0; i < 100'000; ++i) c100k.put(i, i);
     auto cp100k = [&] { doNotOptimize(c100k.get(50'000)); };
-    BENCH("CachePro get @100K", 10, cp100k);
+    BENCH("CachePro get @100K", LARGE, cp100k);
 
     LRUCache<int, int> c1m(1'000'000);
     for (int i = 0; i < 1'000'000; ++i) c1m.put(i, i);
     auto cp1m = [&] { doNotOptimize(c1m.get(500'000)); };
-    BENCH("CachePro get @1M", 1, cp1m);
+    BENCH("CachePro get @1M", LARGE, cp1m);
 
     NaiveLRU<int, int> n1k(1'000);
     for (int i = 0; i < 1'000; ++i) n1k.put(i, i);
     auto nv1k = [&] { doNotOptimize(n1k.get(500)); };
-    BENCH("Naive LRU get @1K", 1000, nv1k);
+    BENCH("Naive LRU get @1K", LARGE, nv1k);
 
     NaiveLRU<int, int> n100k(100'000);
     for (int i = 0; i < 100'000; ++i) n100k.put(i, i);
     auto nv100k = [&] { doNotOptimize(n100k.get(50'000)); };
-    BENCH("Naive LRU get @100K", 10, nv100k);
+    BENCH("Naive LRU get @100K", LARGE, nv100k);
 
     NaiveLRU<int, int> n1m(1'000'000);
     for (int i = 0; i < 1'000'000; ++i) n1m.put(i, i);
     auto nv1m = [&] { doNotOptimize(n1m.get(500'000)); };
-    BENCH("Naive LRU get @1M", 1, nv1m);
+    BENCH("Naive LRU get @1M", LARGE, nv1m);
 }
 
 // Measures steady-state put() throughput while continuously evicting entries.
@@ -84,43 +84,41 @@ static void bench_scaling_evict() {
     for (int i = 0; i < 1'000; ++i) c1k.put(i, i);
     int ctr1k = 1'000;
     auto cp1k = [&] { c1k.put(ctr1k++, ctr1k); };
-    BENCH("CachePro evict @1K", 1000, cp1k);
+    BENCH("CachePro evict @1K", LARGE, cp1k);
 
     LRUCache<int, int> c100k(100'000);
     for (int i = 0; i < 100'000; ++i) c100k.put(i, i);
     int ctr100k = 100'000;
     auto cp100k = [&] { c100k.put(ctr100k++, ctr100k); };
-    BENCH("CachePro evict @100K", 10, cp100k);
+    BENCH("CachePro evict @100K", LARGE, cp100k);
 
     LRUCache<int, int> c1m(1'000'000);
     for (int i = 0; i < 1'000'000; ++i) c1m.put(i, i);
     int ctr1m = 1'000'000;
     auto cp1m = [&] { c1m.put(ctr1m++, ctr1m); };
-    BENCH("CachePro evict @1M", 1, cp1m);
+    BENCH("CachePro evict @1M", LARGE, cp1m);
 
     NaiveLRU<int, int> n1k(1'000);
     for (int i = 0; i < 1'000; ++i) n1k.put(i, i);
     int nctr1k = 1'000;
     auto nv1k = [&] { n1k.put(nctr1k++, nctr1k); };
-    BENCH("Naive LRU evict @1K", 1000, nv1k);
+    BENCH("Naive LRU evict @1K", LARGE, nv1k);
 
     NaiveLRU<int, int> n100k(100'000);
     for (int i = 0; i < 100'000; ++i) n100k.put(i, i);
     int nctr100k = 100'000;
     auto nv100k = [&] { n100k.put(nctr100k++, nctr100k); };
-    BENCH("Naive LRU evict @100K", 10, nv100k);
+    BENCH("Naive LRU evict @100K", LARGE, nv100k);
 
     NaiveLRU<int, int> n1m(1'000'000);
     for (int i = 0; i < 1'000'000; ++i) n1m.put(i, i);
     int nctr1m = 1'000'000;
     auto nv1m = [&] { n1m.put(nctr1m++, nctr1m); };
-    BENCH("Naive LRU evict @1M", 1, nv1m);
+    BENCH("Naive LRU evict @1M", LARGE, nv1m);
 }
 
 // Executes all scaling benchmarks.
-void run_scaling_benchmarks() {
-    setHeader("Scaling Benchmarks");
-
+static void run_benchmarks() {
     bench_scaling_fill();
     std::cout << "\n";
 
@@ -128,6 +126,6 @@ void run_scaling_benchmarks() {
     std::cout << "\n";
 
     bench_scaling_evict();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();

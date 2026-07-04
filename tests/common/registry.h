@@ -10,6 +10,9 @@ struct TestSuite {
     void (*run)();
 };
 
+// Function-local static avoids the static initialization order fiasco:
+// registrars in other translation units run before main() and need a
+// guaranteed-initialized registry to register into.
 inline std::vector<TestSuite>& test_registry()
 {
     static std::vector<TestSuite> registry;
@@ -27,6 +30,8 @@ struct TestRegistrar {
     {
         test_registry().push_back({
             next_test_suite_id()++,
+            // Use the source file's stem as the suite name so each TEST_SUITE
+            // macro invocation doesn't need to pass one explicitly.
             std::filesystem::path(file).stem().string(),
             run
         });

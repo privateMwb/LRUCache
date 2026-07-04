@@ -7,13 +7,11 @@
 // - contains()
 // - Capacity and size queries
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 using namespace CachePro;
 
-int main() {
-    mainTitle("\nBasic Usage Examples");
-    borderLine();
+static void run_examples() {
 
     // Constructs a cache with a fixed capacity.
     setTitle("Construction");
@@ -52,8 +50,6 @@ int main() {
 
     std::cout << "contains(\"beta\")    : " << cache.contains("beta") << "\n";
     std::cout << "contains(\"unknown\") : " << cache.contains("unknown") << "\n";
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

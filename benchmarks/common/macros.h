@@ -17,3 +17,16 @@ std::cout << std::left                                         \
           << std::setw(20) << iterColor(iteration)             \
           << "\n";                                             \
 } while (0)
+
+
+// Registers this file's run_benchmarks with the global registry so it
+// runs automatically at startup. The anonymous namespace gives
+// `registrar` internal linkage, preventing duplicate-symbol errors when
+// this macro is expanded in multiple translation units.
+#define REGISTER_BENCH_SUITE()        \
+    namespace {                      \
+        static BenchRegistrar registrar( \
+            __FILE__,                \
+            run_benchmarks                \
+        );                           \
+    }

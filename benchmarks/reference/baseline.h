@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <utility>
 
+// Baseline O(1) LRU cache using a doubly-linked list + hash map of
+// iterators. List front = most recently used, back = least recently used.
+// Serves as a reference/naive implementation to benchmark against.
 template<typename K, typename V>
 class NaiveLRU {
 public:
@@ -85,5 +88,7 @@ public:
 private:
     std::size_t capacity_;
     std::list<std::pair<K, V>> list_;
+    // Maps each key to its node in list_, enabling O(1) lookup, promotion,
+    // and eviction without traversing the list.
     std::unordered_map<K, typename std::list<std::pair<K, V>>::iterator> map_;
 };

@@ -102,32 +102,30 @@ target_link_libraries(
 # Examples
 # ============================================================================
 
-# Build every example in the examples/ directory.
+# Collect all examples source files.
 file(GLOB_RECURSE EXAMPLE_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/examples/*.cpp"
 )
 
-foreach(example ${EXAMPLE_SOURCES})
-    get_filename_component(target "${example}" NAME_WE)
-    
-    # Build the example executable.
-    add_executable(${target} "${example}")
-    
-    # Link CachePro to the example executable.
-    target_link_libraries(
-        ${target}
-        PRIVATE
-        CachePro
-    )
-    
-    # Allow simple example includes.
-    target_include_directories(
-        ${target}
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/examples
-    )
-endforeach()
+# Build the example executable.
+add_executable(
+    examples
+    ${EXAMPLE_SOURCES}
+)
 
+# Allow simple example includes.
+target_include_directories(
+    examples
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/examples
+)
+
+# Link CachePro to the example executable.
+target_link_libraries(
+    examples
+    PRIVATE
+    CachePro
+)
 
 
 # ============================================================================

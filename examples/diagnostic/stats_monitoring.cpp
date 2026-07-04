@@ -6,13 +6,11 @@
 // - resetting statistics
 // - operations that do not affect statistics
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 using namespace CachePro;
 
-int main() {
-    mainTitle("\nStatistics Monitoring Examples");
-    borderLine();
+static void run_examples() {
 
     // Demonstrates recording cache hits and misses.
     setTitle("Recording Hits And Misses");
@@ -52,8 +50,6 @@ int main() {
     std::cout << "Hits after reset     : " << cache.hitCount() << "\n";
     std::cout << "Misses after reset   : " << cache.missCount() << "\n";
     std::cout << "Hit rate after reset : " << cache.hitRate() << "%\n";
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

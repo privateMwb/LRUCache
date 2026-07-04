@@ -6,13 +6,11 @@
 // - resizing to the current size
 // - rejecting invalid capacity values
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 using namespace CachePro;
 
-int main() {
-    mainTitle("\nResize Examples");
-    borderLine();
+static void run_examples() {
 
     // Demonstrates growing the cache capacity.
     setTitle("Growing Capacity");
@@ -71,8 +69,6 @@ int main() {
     } catch (const std::invalid_argument& e) {
         std::cout << "resize(0) threw : " << e.what() << "\n";
     }
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

@@ -10,8 +10,8 @@
 // - Shrinking without eviction
 // - Repeated grow/shrink cycles
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 using namespace CachePro;
 
@@ -82,9 +82,7 @@ static void bench_resize_grow_shrink_cycle() {
 }
 
 // Executes all resize benchmarks.
-void run_resize_benchmarks() {
-    setHeader("Resize Benchmarks");
-
+static void run_benchmarks() {
     bench_resize_grow();
     std::cout << "\n";
 
@@ -95,6 +93,6 @@ void run_resize_benchmarks() {
     std::cout << "\n";
 
     bench_resize_grow_shrink_cycle();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();

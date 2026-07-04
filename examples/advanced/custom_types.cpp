@@ -6,7 +6,7 @@
 // - non-default-constructible value types
 // - user-defined value types
 
-#include <common/example_helper.h>
+#include <common/framework.h>
 
 #include <memory>
 
@@ -21,10 +21,7 @@ struct Config {
         : level(lvl), label(std::move(lbl)) {}
 };
 
-int main() {
-    mainTitle("\nCustom Type Examples");
-    borderLine();
-
+static void run_examples() {
     // Demonstrates string keys with primitive values.
     setTitle("String Keys");
 
@@ -57,8 +54,6 @@ int main() {
               << ", label=" << settings.get(1)->label << "\n";
     std::cout << "get(2) : level=" << settings.get(2)->level
               << ", label=" << settings.get(2)->label << "\n";
-
-    borderLine();
-    std::cout << "\n";
-    return 0;
 }
+
+REGISTER_EXAMPLE_SUITE();

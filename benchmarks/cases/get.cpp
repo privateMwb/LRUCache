@@ -10,8 +10,8 @@
 // - peek() vs get()
 // - contains()
 
-#include <common/bench_helper.h>
-#include <common/bench_baseline.h>
+#include <common/framework.h>
+#include <reference/baseline.h>
 
 using namespace CachePro;
 
@@ -134,9 +134,7 @@ static void bench_contains() {
 }
 
 // Runs all get benchmarks.
-void run_get_benchmarks() {
-    setHeader("Get Benchmarks");
-
+static void run_benchmarks() {
     bench_get_hit_relink();
     std::cout << "\n";
 
@@ -150,6 +148,6 @@ void run_get_benchmarks() {
     std::cout << "\n";
 
     bench_contains();
-    borderLine();
-    std::cout << "\n";
 }
+
+REGISTER_BENCH_SUITE();
