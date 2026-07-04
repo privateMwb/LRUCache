@@ -8,6 +8,7 @@ int main(int argc, char* argv[]) {
             setTitle(suite.name);
             suite.run();
         }
+        std::cout << "\n";
         stats();
         std::cout << "\n";
         return 0;
@@ -15,13 +16,13 @@ int main(int argc, char* argv[]) {
 
     std::string_view requested = argv[1];
     int requested_id = -1;
-    
+
     try {
       requested_id = std::stoi(std::string(requested));
     } catch (...) {
       // Not a number.
     }
-    
+
     if (requested == "list") {
         std::cout << "\nAvailable test suites:\n";
         for (const auto& suite : test_registry())
@@ -38,6 +39,7 @@ int main(int argc, char* argv[]) {
             std::cout << "\n";
             setTitle(suite.name);
             suite.run();
+            std::cout << "\n";
             stats();
             std::cout << "\n";
             return 0;
