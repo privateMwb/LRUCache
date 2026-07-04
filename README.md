@@ -480,19 +480,28 @@ cmake --build .
 ### Run tests
 
 ```bash
-./tests
+./tests              # run all test suites
+./tests list          # list available suites
+./tests 1             # run by number
+./tests constructor   # run by name
 ```
 
 ### Run benchmarks
 
 ```bash
-./benchmarks
+./benchmarks           # run all benchmark suites
+./benchmarks list       # list available suites
+./benchmarks 1          # run by number
+./benchmarks put        # run by name
 ```
 
 ### Run examples
 
 ```bash
-./examples
+./examples              # run all examples
+./examples list          # list available examples
+./examples 1             # run by number
+./examples basic_usage   # run by name
 ```
 
 ---
