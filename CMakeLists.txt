@@ -1,3 +1,19 @@
+# ============================================================
+# CMakeLists.txt
+# Build configuration for the CachePro library.
+# ============================================================
+#
+# Sections:
+#   1. C++ Configuration
+#   2. CachePro Library
+#   3. Tests
+#   4. Benchmarks
+#   5. Examples
+#   6. Installation
+#   7. Packaging
+#
+# ============================================================
+
 cmake_minimum_required(VERSION 3.20)
 
 project(
