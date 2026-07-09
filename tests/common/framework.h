@@ -1,3 +1,5 @@
+#pragma once
+
 #include <CachePro/LRUCache.h>
 
 #include "helper.h"
