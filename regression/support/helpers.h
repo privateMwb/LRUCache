@@ -208,7 +208,7 @@ inline void setHeader(std::string_view header) {
 // in that order.
 inline void printComparisonRow(std::string_view suite, std::string_view name, std::size_t iter,
                                std::string_view iteration, double bNs, double cNs) {
-    const double pct = bNs == 0 ? 0.0 : (cNs - bNs) / bNs * 100.0;
+    const double pct = bNs == 0 ? 0.0 : (bNs - cNs) / cNs * 100.0;
 
     // 0% (no measured difference) is treated as neutral; anything else
     // colors green (faster) or red (slower) by direction.
