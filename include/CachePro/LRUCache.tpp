@@ -31,6 +31,7 @@
 #include <new>       // ::operator new/delete, std::align_val_t
 #include <stdexcept> // std::invalid_argument
 #include <utility>   // std::move, std::forward
+#include <limits>    // std::numeric_limits
 // clang-format on
 
 namespace CachePro {
