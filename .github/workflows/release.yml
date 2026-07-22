@@ -24,8 +24,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          generate_release_notes: false
+              if: startsWith(github.ref, 'refs/tags/')
+              uses: softprops/action-gh-release@v2
+              with:
+                tag_name: ${{ github.ref_name }}
+                body_path: releases/${{ github.ref_name }}.md
+                generate_release_notes: false
+                overwrite_files: true
