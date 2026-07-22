@@ -68,19 +68,12 @@ jobs:
           sudo apt update
           sudo apt install -y cmake ninja-build g++ clang
 
-      # Only tests/ are exercised by this workflow (via ctest below) —
-      # benchmarks/tools/examples are skipped so the matrix isn't
-      # paying to build (and, for tools/, fetch nlohmann_json for)
-      # targets nothing here actually runs, on every one of 8 legs.
+      # Only tests/ are exercised by this workflow (via ctest below).
+      # Benchmarks, tools, and examples are disabled to reduce CI time.
       - name: Configure
         env:
           CXX: ${{ matrix.cxx || '' }}
-        run: >
-          cmake -S . -B build-${{ matrix.compiler }}-${{ matrix.build_type }} 
-            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} 
-            -DBUILD_BENCHMARKS=OFF 
-            -DBUILD_TOOLS=OFF 
-            -DBUILD_EXAMPLES=OFF
+        run: cmake -S . -B build-${{ matrix.compiler }}-${{ matrix.build_type }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_BENCHMARKS=OFF -DBUILD_TOOLS=OFF -DBUILD_EXAMPLES=OFF
 
       - name: Build
         run: cmake --build build-${{ matrix.compiler }}-${{ matrix.build_type }} --config ${{ matrix.build_type }}
