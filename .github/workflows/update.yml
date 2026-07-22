@@ -1,7 +1,7 @@
 # ============================================================
 # .github/workflows/update.yml
 # Bumps the version and source hash in the Conan recipe, vcpkg
-# port, and root CMakeLists.txt whenever a v* tag is pushed.
+# port, and root CMakeLists.txt for a given v* tag.
 # ============================================================
 
 name: Update Package Recipes
@@ -10,6 +10,11 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to update recipes for (e.g. v1.0.0)"
+        required: true
 
 permissions:
   contents: write
@@ -26,25 +31,32 @@ jobs:
       VCPKG_PORT_DIR: packaging/vcpkg/ports/cachepro
 
     steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Extract version
-        id: version
-        run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          ref: ${{ steps.tag.outputs.tag }}
 
       - name: Determine source branch
         id: branch
         run: |
-          CANDIDATES=$(git branch -r --contains "$GITHUB_SHA" \
+          SHA=$(git rev-parse HEAD)
+          CANDIDATES=$(git branch -r --contains "$SHA" \
             | grep -v ' -> ' | grep -v 'HEAD' | sed 's#^ *origin/##')
 
           if [ -z "$CANDIDATES" ]; then
-            echo "No remote branch contains $GITHUB_SHA" >&2
+            echo "No remote branch contains $SHA" >&2
             exit 1
           fi
 
@@ -64,7 +76,7 @@ jobs:
         run: |
           curl -L \
             -o source.tar.gz \
-            https://github.com/${{ env.REPOSITORY }}/archive/refs/tags/v${{ steps.version.outputs.version }}.tar.gz
+            https://github.com/${{ env.REPOSITORY }}/archive/refs/tags/${{ steps.tag.outputs.tag }}.tar.gz
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -76,7 +88,7 @@ jobs:
           python scripts/update_package_files.py \
             --package ${{ env.PACKAGE_NAME }} \
             --repo ${{ env.REPOSITORY }} \
-            --version ${{ steps.version.outputs.version }} \
+            --version ${{ steps.tag.outputs.version }} \
             --archive source.tar.gz \
             --root-dir "$ROOT_DIR" \
             --conan-dir "$CONAN_RECIPE_DIR" \
@@ -99,5 +111,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Update package recipes for v${{ steps.version.outputs.version }}"
+          git commit -m "Update package recipes for ${{ steps.tag.outputs.tag }}"
           git push origin HEAD:${{ steps.branch.outputs.branch }}
