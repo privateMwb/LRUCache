@@ -51,6 +51,8 @@ jobs:
 
           lcov --remove coverage.info \
             '/usr/*' \
+            '*/tests/*' \
+            '*/_deps/*' \
             --output-file coverage.filtered.info
 
       - name: Generate HTML report

@@ -76,10 +76,10 @@ jobs:
         env:
           CXX: ${{ matrix.cxx || '' }}
         run: >
-          cmake -S . -B build-${{ matrix.compiler }}-${{ matrix.build_type }} \
-            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-            -DBUILD_BENCHMARKS=OFF \
-            -DBUILD_TOOLS=OFF \
+          cmake -S . -B build-${{ matrix.compiler }}-${{ matrix.build_type }} 
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} 
+            -DBUILD_BENCHMARKS=OFF 
+            -DBUILD_TOOLS=OFF 
             -DBUILD_EXAMPLES=OFF
 
       - name: Build
