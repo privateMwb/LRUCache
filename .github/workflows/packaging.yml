@@ -4,7 +4,7 @@
 # consumable, on a real Linux runner (none of PACKAGING.md's Termux
 # workarounds apply here — this is what a real consumer experiences).
 #
-# Consumer verification is delegated to recipes/jsonpro/all/test_package/
+# Consumer verification is delegated to recipes/cachepro/all/test_package/
 # and vcpkg-smoke-test/ rather than reimplemented here, so there's one
 # place — not two — that defines what "the package works" means.
 # ============================================================
@@ -17,9 +17,9 @@ on:
       - "v*"
   pull_request:
     paths:
-      - "recipes/**"
-      - "vcpkg/ports/**"
-      - "vcpkg-smoke-test/**"
+      - "packaging/recipes/**"
+      - "packaging/vcpkg/ports/**"
+      - "packaging/vcpkg-smoke-test/**"
       - "CMakeLists.txt"
       - "conandata.yml"
   workflow_dispatch:
@@ -27,7 +27,7 @@ on:
 jobs:
   # ------------------------------------------------------------
   # conan create builds the package, then automatically builds and
-  # runs recipes/jsonpro/all/test_package/ against it.
+  # runs recipes/cachepro/all/test_package/ against it.
   # ------------------------------------------------------------
   conan:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
 
       - name: conan create (builds package + runs test_package)
         run: |
-          conan create recipes/jsonpro/all --version ${{ steps.version.outputs.version }} \
+          conan create packaging/recipes/cachepro/all --version ${{ steps.version.outputs.version }} \
             -s compiler.cppstd=23 --build=missing
 
   # ------------------------------------------------------------
