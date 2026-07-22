@@ -107,8 +107,9 @@ endif()
 # projects that reference these flags (e.g. -DBUILD_TESTS=OFF) expect a
 # stable name that doesn't change when this skeleton is retargeted.
 option(BUILD_TESTS "Build the test suite" ON)
+option(BUILD_BENCHMARKS "Build the benchmark suite" ON)
 option(BUILD_REGRESSION "Build the regression benchmark tools" ON)
-option(BUILD_EXAMPLES "Build the examples" ON)
+option(BUILD_EXAMPLES "Build the examples suite" ON)
 
 enable_testing()
 
