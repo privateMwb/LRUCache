@@ -19,11 +19,11 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PACKAGE_NAME: jsonpro
-      REPOSITORY: privateMwb/JsonParser
+      PACKAGE_NAME: cachepro
+      REPOSITORY: privateMwb/LRUCache
       ROOT_DIR: .
-      CONAN_RECIPE_DIR: recipes/jsonpro/all
-      VCPKG_PORT_DIR: vcpkg/ports/jsonpro
+      CONAN_RECIPE_DIR: packaging/recipes/cachepro/all
+      VCPKG_PORT_DIR: packaging/vcpkg/ports/cachepro
 
     steps:
       - name: Checkout
