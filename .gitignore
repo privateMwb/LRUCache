@@ -2,7 +2,7 @@
 build*/
 cmake-build-*/
 install*/
-# results*/
+results*/
 
 # Object files
 *.o
