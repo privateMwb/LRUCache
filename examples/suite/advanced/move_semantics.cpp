@@ -1,58 +1,65 @@
-// LRUCache move semantics examples.
+// Move semantics for LRUCache.
 //
 // Demonstrates:
-// - move construction
-// - move assignment
-// - moved-from object state
-// - returning a cache from a function
+// - Move construction transferring ownership of the pool and table
+// - Move assignment replacing an existing cache's contents
+// - What's actually safe to call on a moved-from cache
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace CachePro;
 
-// Builds and returns a populated cache.
-LRUCache<std::string, int> buildSessionCache() {
-    LRUCache<std::string, int> cache(3);
-    cache.put("session:1", 100);
-    cache.put("session:2", 200);
-    return cache;
-}
-
 static void run_examples() {
-    
-    // Demonstrates move construction.
+
+    // Moving a cache transfers its pool and table allocations directly —
+    // no entries are copied or rehashed.
     setTitle("Move Construction");
 
-    LRUCache<std::string, int> source(3);
-    source.put("a", 1);
-    source.put("b", 2);
+    LRUCache<std::string, int> original(3);
+    original.put("alpha", 1);
+    original.put("beta", 2);
 
-    LRUCache<std::string, int> moved(std::move(source));
+    LRUCache<std::string, int> moved(std::move(original));
 
-    std::cout << "moved.size()  : " << moved.size() << "\n";
-    std::cout << "source.size() : " << source.size() << "  (moved-from, now empty)\n\n";
+    std::cout << "moved.size()            : " << moved.size() << "\n";
+    std::cout << "moved.contains(\"alpha\") : " << moved.contains("alpha") << "\n";
+    std::cout << "original.capacity()     : " << original.capacity() << "\n";
+    std::cout << "original.size()         : " << original.size() << "\n";
+    std::cout << "original.empty()        : " << original.empty() << "\n\n";
 
-    // Demonstrates move assignment.
+    // A moved-from cache has capacity 0 and no storage. put() checks for
+    // exactly that and throws rather than touching null storage — but
+    // that guard only exists on put(). get()/peek()/contains() don't
+    // check, so calling any of them on a moved-from cache is undefined
+    // behavior, not a clean exception. Only capacity(), size(), empty(),
+    // and put() (via its exception) are safe to call here.
+    setTitle("Moved-From State");
+
+    try {
+        original.put("gamma", 3);
+    } catch (const std::exception& e) {
+        std::cout << "put() on moved-from cache threw: " << e.what() << "\n\n";
+    }
+
+    // Move assignment destroys the target's existing contents first, then
+    // takes ownership of the source's pool and table — same end state as
+    // move construction, just onto an already-live cache.
     setTitle("Move Assignment");
 
-    LRUCache<std::string, int> target(2);
-    target.put("old", 999);
+    LRUCache<std::string, int> a(2);
+    a.put("x", 10);
+    a.put("y", 20);
 
-    LRUCache<std::string, int> incoming(3);
-    incoming.put("new", 1);
+    LRUCache<std::string, int> b(5);
+    b.put("z", 99);
 
-    target = std::move(incoming);
+    b = std::move(a);
 
-    std::cout << "target.contains(\"old\") : " << target.contains("old") << "  (replaced)\n";
-    std::cout << "target.contains(\"new\") : " << target.contains("new") << "\n\n";
-
-    // Demonstrates returning a cache from a function.
-    setTitle("Returning A Cache From A Function");
-
-    LRUCache<std::string, int> sessions = buildSessionCache();
-
-    std::cout << "sessions.size()           : " << sessions.size() << "\n";
-    std::cout << "sessions.get(\"session:1\") : " << *sessions.get("session:1") << "\n";
+    std::cout << "b.size()         : " << b.size() << "\n";
+    std::cout << "b.capacity()     : " << b.capacity() << "\n";
+    std::cout << "b.contains(\"z\")  : " << b.contains("z") << " (destroyed by the assignment)\n";
+    std::cout << "b.contains(\"x\")  : " << b.contains("x") << "\n";
+    std::cout << "a.size()         : " << a.size() << " (moved-from)\n";
 }
 
 REGISTER_EXAMPLE_SUITE();

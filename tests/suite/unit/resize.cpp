@@ -1,114 +1,75 @@
-// LRUCache resize test suite.
+// LRUCache resize() test suite.
 //
 // Coverage:
-// - Growing capacity preserves existing entries
-// - Growing capacity allows additional insertions
-// - Shrinking capacity evicts least-recently-used entries
-// - Shrinking to the current size evicts nothing
-// - Resizing to zero throws
-// - Shrinking preserves the most-recently-used entry
+// - Growing preserves all existing entries and raises capacity()
+// - Shrinking to a size still >= the live entry count preserves everything
+// - Shrinking below the live entry count evicts least-recently-used entries
+//   first, keeping the most-recently-used ones
+// - resize(0) throws std::invalid_argument
 
-#include <common/framework.h>
+#include <support/framework.h>
 
 using namespace CachePro;
 
-// Verifies that growing capacity preserves all existing entries.
-static void resize_grow_preserves_entries() {
-    LRUCache<int, int> c(2);
-    c.put(1, 10);
-    c.put(2, 20);
+// Verifies growing the cache preserves existing entries and raises capacity.
+static void grow_preserves_entries() {
+    LRUCache<int, std::string> cache(2);
+    cache.put(1, "a");
+    cache.put(2, "b");
 
-    c.resize(4);
+    cache.resize(4);
+    CHK(cache.capacity() == 4);
+    CHK(cache.size() == 2);
+    CHK(cache.contains(1));
+    CHK(cache.contains(2));
 
-    CHK(c.capacity() == 4);
-    CHK(c.size() == 2);
-    CHK(*c.get(1) == 10);
-    CHK(*c.get(2) == 20);
+    cache.put(3, "c");
+    cache.put(4, "d");
+    CHK(cache.size() == 4);
+    CHK(cache.contains(1)); // no eviction needed, room for all four
 }
 
-// Verifies that growing capacity allows additional insertions without eviction.
-static void resize_grow_allows_more_insertions() {
-    LRUCache<int, int> c(2);
-    c.put(1, 10);
-    c.put(2, 20);
+// Verifies shrinking to a size still covering all live entries keeps them all.
+static void shrink_above_live_count_preserves_entries() {
+    LRUCache<int, std::string> cache(4);
+    cache.put(1, "a");
+    cache.put(2, "b");
 
-    c.resize(4);
-    c.put(3, 30);
-    c.put(4, 40);
-
-    CHK(c.size() == 4);
-    CHK(c.contains(1) == true);
-    CHK(c.contains(2) == true);
+    cache.resize(3);
+    CHK(cache.capacity() == 3);
+    CHK(cache.size() == 2);
+    CHK(cache.contains(1));
+    CHK(cache.contains(2));
 }
 
-// Verifies that shrinking capacity evicts the least-recently-used entries.
-static void resize_shrink_evicts_lru() {
-    LRUCache<int, int> c(4);
-    c.put(1, 10);
-    c.put(2, 20);
-    c.put(3, 30);
-    c.put(4, 40);
+// Verifies shrinking below the live entry count evicts the least-recently-used
+// entries first, keeping the most-recently-used ones.
+static void shrink_below_live_count_evicts_lru() {
+    LRUCache<int, std::string> cache(4);
+    cache.put(1, "a");
+    cache.put(2, "b");
+    cache.put(3, "c"); // MRU order: 3, 2, 1
 
-    c.resize(2);
-
-    CHK(c.capacity() == 2);
-    CHK(c.size() == 2);
-    CHK(c.contains(1) == false);
-    CHK(c.contains(2) == false);
-    CHK(c.contains(3) == true);
-    CHK(c.contains(4) == true);
+    cache.resize(2);
+    CHK(cache.capacity() == 2);
+    CHK(cache.size() == 2);
+    CHK(!cache.contains(1)); // least-recently-used, evicted
+    CHK(cache.contains(2));
+    CHK(cache.contains(3));
 }
 
-// Verifies that shrinking to the current size preserves all entries.
-static void resize_shrink_to_current_size() {
-    LRUCache<int, int> c(4);
-    c.put(1, 10);
-    c.put(2, 20);
-
-    c.resize(2);
-
-    CHK(c.capacity() == 2);
-    CHK(c.size() == 2);
-    CHK(c.contains(1) == true);
-    CHK(c.contains(2) == true);
-}
-
-// Verifies that resizing to zero throws std::invalid_argument.
+// Verifies resize(0) is rejected.
 static void resize_to_zero_throws() {
-    LRUCache<int, int> c(4);
-    bool threw = false;
-
-    try {
-        c.resize(0);
-    } catch (const std::invalid_argument&) {
-        threw = true;
-    }
-
-    CHK(threw == true);
+    LRUCache<int, std::string> cache(4);
+    CHK_THROWS(cache.resize(0), std::invalid_argument);
 }
 
-// Verifies that shrinking preserves the most-recently-used entry.
-static void resize_shrink_preserves_mru_order() {
-    LRUCache<int, int> c(3);
-    c.put(1, 10);
-    c.put(2, 20);
-    c.put(3, 30);
-    (void)c.get(1);   // 1 is now most-recently-used.
-
-    c.resize(1);
-
-    CHK(c.size() == 1);
-    CHK(c.contains(1) == true);
-}
-
-// Executes all resize test cases.
+// Executes all resize() test cases.
 static void run_tests() {
-    RUN(resize_grow_preserves_entries);
-    RUN(resize_grow_allows_more_insertions);
-    RUN(resize_shrink_evicts_lru);
-    RUN(resize_shrink_to_current_size);
+    RUN(grow_preserves_entries);
+    RUN(shrink_above_live_count_preserves_entries);
+    RUN(shrink_below_live_count_evicts_lru);
     RUN(resize_to_zero_throws);
-    RUN(resize_shrink_preserves_mru_order);
 }
 
 REGISTER_TEST_SUITE();

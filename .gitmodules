@@ -1,9 +1,0 @@
-[submodule "external/PoolAllocator"]
-	path = external/PoolAllocator
-	url = https://github.com/privateMwb/PoolAllocator
-[submodule "external/Vector"]
-	path = external/Vector
-	url = https://github.com/privateMwb/VectorPro
-[submodule "external/HashMap"]
-	path = external/HashMap
-	url = https://github.com/privateMwb/HashMap
