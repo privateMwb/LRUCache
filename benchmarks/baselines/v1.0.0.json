@@ -2,505 +2,505 @@
   {
     "suite": "Element Access",
     "operation": "get() hit",
-    "total_ns": 21061,
+    "total_ns": 50173,
     "iterations": 10000,
-    "ns_per_op": 2.11
+    "ns_per_op": 5.02
   },
   {
     "suite": "Element Access",
     "operation": "get() hit",
-    "total_ns": 209064,
+    "total_ns": 215832,
     "iterations": 100000,
-    "ns_per_op": 2.09
+    "ns_per_op": 2.16
   },
   {
     "suite": "Element Access",
     "operation": "get() hit",
-    "total_ns": 2137548,
+    "total_ns": 2198222,
     "iterations": 1000000,
-    "ns_per_op": 2.14
+    "ns_per_op": 2.20
   },
   {
     "suite": "Element Access",
     "operation": "peek() hit",
-    "total_ns": 10505,
+    "total_ns": 12383,
     "iterations": 10000,
-    "ns_per_op": 1.05
+    "ns_per_op": 1.24
   },
   {
     "suite": "Element Access",
     "operation": "peek() hit",
-    "total_ns": 139399,
+    "total_ns": 123370,
     "iterations": 100000,
-    "ns_per_op": 1.39
+    "ns_per_op": 1.23
   },
   {
     "suite": "Element Access",
     "operation": "peek() hit",
-    "total_ns": 1061323,
+    "total_ns": 1278951,
     "iterations": 1000000,
-    "ns_per_op": 1.06
+    "ns_per_op": 1.28
   },
   {
     "suite": "Iteration",
     "operation": "keys() traversal",
-    "total_ns": 1714453,
+    "total_ns": 1552049,
     "iterations": 10000,
-    "ns_per_op": 171.45
+    "ns_per_op": 155.20
   },
   {
     "suite": "Iteration",
     "operation": "keys() traversal",
-    "total_ns": 15550747,
+    "total_ns": 15436795,
     "iterations": 100000,
-    "ns_per_op": 155.51
+    "ns_per_op": 154.37
   },
   {
     "suite": "Iteration",
     "operation": "keys() traversal",
-    "total_ns": 148295557,
+    "total_ns": 154029266,
     "iterations": 1000000,
-    "ns_per_op": 148.30
+    "ns_per_op": 154.03
   },
   {
     "suite": "Search",
     "operation": "contains() miss",
-    "total_ns": 17507,
+    "total_ns": 15499,
     "iterations": 10000,
-    "ns_per_op": 1.75
+    "ns_per_op": 1.55
   },
   {
     "suite": "Search",
     "operation": "contains() miss",
-    "total_ns": 174272,
+    "total_ns": 165698,
     "iterations": 100000,
-    "ns_per_op": 1.74
+    "ns_per_op": 1.66
   },
   {
     "suite": "Search",
     "operation": "contains() miss",
-    "total_ns": 1409185,
+    "total_ns": 1242142,
     "iterations": 1000000,
-    "ns_per_op": 1.41
+    "ns_per_op": 1.24
   },
   {
     "suite": "Search",
     "operation": "get() miss",
-    "total_ns": 21142,
+    "total_ns": 24736,
     "iterations": 10000,
-    "ns_per_op": 2.11
+    "ns_per_op": 2.47
   },
   {
     "suite": "Search",
     "operation": "get() miss",
-    "total_ns": 209194,
+    "total_ns": 246659,
     "iterations": 100000,
-    "ns_per_op": 2.09
+    "ns_per_op": 2.47
   },
   {
     "suite": "Search",
     "operation": "get() miss",
-    "total_ns": 2105990,
+    "total_ns": 2482361,
     "iterations": 1000000,
-    "ns_per_op": 2.11
+    "ns_per_op": 2.48
   },
   {
     "suite": "Emplace",
     "operation": "emplace() insert",
-    "total_ns": 457617,
+    "total_ns": 348699,
     "iterations": 10000,
-    "ns_per_op": 45.76
+    "ns_per_op": 34.87
   },
   {
     "suite": "Emplace",
     "operation": "emplace() insert",
-    "total_ns": 4317128,
+    "total_ns": 3598939,
     "iterations": 100000,
-    "ns_per_op": 43.17
+    "ns_per_op": 35.99
   },
   {
     "suite": "Emplace",
     "operation": "emplace() insert",
-    "total_ns": 48882308,
+    "total_ns": 40634979,
     "iterations": 1000000,
-    "ns_per_op": 48.88
+    "ns_per_op": 40.63
   },
   {
     "suite": "Erase",
     "operation": "erase() existing",
-    "total_ns": 508763,
+    "total_ns": 438276,
     "iterations": 10000,
-    "ns_per_op": 50.88
+    "ns_per_op": 43.83
   },
   {
     "suite": "Erase",
     "operation": "erase() existing",
-    "total_ns": 4597469,
+    "total_ns": 4379121,
     "iterations": 100000,
-    "ns_per_op": 45.97
+    "ns_per_op": 43.79
   },
   {
     "suite": "Erase",
     "operation": "erase() existing",
-    "total_ns": 32735666,
+    "total_ns": 35074939,
     "iterations": 1000000,
-    "ns_per_op": 32.74
+    "ns_per_op": 35.07
   },
   {
     "suite": "Insert",
     "operation": "put() insert",
-    "total_ns": 424096,
+    "total_ns": 384476,
     "iterations": 10000,
-    "ns_per_op": 42.41
+    "ns_per_op": 38.45
   },
   {
     "suite": "Insert",
     "operation": "put() insert",
-    "total_ns": 4255186,
+    "total_ns": 3782862,
     "iterations": 100000,
-    "ns_per_op": 42.55
+    "ns_per_op": 37.83
   },
   {
     "suite": "Insert",
     "operation": "put() insert",
-    "total_ns": 48897440,
+    "total_ns": 41512633,
     "iterations": 1000000,
-    "ns_per_op": 48.90
+    "ns_per_op": 41.51
   },
   {
     "suite": "Pop Clear",
     "operation": "clear() + refill",
-    "total_ns": 8867017,
+    "total_ns": 7926424,
     "iterations": 10000,
-    "ns_per_op": 886.70
+    "ns_per_op": 792.64
   },
   {
     "suite": "Pop Clear",
     "operation": "clear() + refill",
-    "total_ns": 87836045,
+    "total_ns": 78718219,
     "iterations": 100000,
-    "ns_per_op": 878.36
+    "ns_per_op": 787.18
   },
   {
     "suite": "Pop Clear",
     "operation": "clear() + refill",
-    "total_ns": 903165953,
+    "total_ns": 868469912,
     "iterations": 1000000,
-    "ns_per_op": 903.17
+    "ns_per_op": 868.47
   },
   {
     "suite": "Push Back",
     "operation": "put() insert (evicting)",
-    "total_ns": 514031,
+    "total_ns": 483760,
     "iterations": 10000,
-    "ns_per_op": 51.40
+    "ns_per_op": 48.38
   },
   {
     "suite": "Push Back",
     "operation": "put() insert (evicting)",
-    "total_ns": 5129033,
+    "total_ns": 4642700,
     "iterations": 100000,
-    "ns_per_op": 51.29
+    "ns_per_op": 46.43
   },
   {
     "suite": "Push Back",
     "operation": "put() insert (evicting)",
-    "total_ns": 50634339,
+    "total_ns": 46613401,
     "iterations": 1000000,
-    "ns_per_op": 50.63
+    "ns_per_op": 46.61
   },
   {
     "suite": "Construction",
     "operation": "construct empty",
-    "total_ns": 37330544,
+    "total_ns": 32904628,
     "iterations": 10000,
-    "ns_per_op": 3733.05
+    "ns_per_op": 3290.46
   },
   {
     "suite": "Construction",
     "operation": "construct empty",
-    "total_ns": 373097373,
+    "total_ns": 328532962,
     "iterations": 100000,
-    "ns_per_op": 3730.97
+    "ns_per_op": 3285.33
   },
   {
     "suite": "Construction",
     "operation": "construct empty",
-    "total_ns": 3730859183,
+    "total_ns": 3296855655,
     "iterations": 1000000,
-    "ns_per_op": 3730.86
+    "ns_per_op": 3296.86
   },
   {
     "suite": "Move",
     "operation": "move-assign",
-    "total_ns": 74352,
+    "total_ns": 71392,
     "iterations": 10000,
-    "ns_per_op": 7.44
+    "ns_per_op": 7.14
   },
   {
     "suite": "Move",
     "operation": "move-assign",
-    "total_ns": 744588,
+    "total_ns": 719238,
     "iterations": 100000,
-    "ns_per_op": 7.45
+    "ns_per_op": 7.19
   },
   {
     "suite": "Move",
     "operation": "move-assign",
-    "total_ns": 7430516,
+    "total_ns": 7025326,
     "iterations": 1000000,
-    "ns_per_op": 7.43
+    "ns_per_op": 7.03
   },
   {
     "suite": "Move",
     "operation": "move-construct",
-    "total_ns": 11713086,
+    "total_ns": 10271046,
     "iterations": 10000,
-    "ns_per_op": 1171.31
+    "ns_per_op": 1027.10
   },
   {
     "suite": "Move",
     "operation": "move-construct",
-    "total_ns": 116369736,
+    "total_ns": 101336101,
     "iterations": 100000,
-    "ns_per_op": 1163.70
+    "ns_per_op": 1013.36
   },
   {
     "suite": "Move",
     "operation": "move-construct",
-    "total_ns": 1160676338,
+    "total_ns": 1022638739,
     "iterations": 1000000,
-    "ns_per_op": 1160.68
+    "ns_per_op": 1022.64
   },
   {
     "suite": "Reallocation",
     "operation": "resize() grow",
-    "total_ns": 196875,
+    "total_ns": 197457,
     "iterations": 10000,
-    "ns_per_op": 19.69
+    "ns_per_op": 19.75
   },
   {
     "suite": "Reallocation",
     "operation": "resize() grow",
-    "total_ns": 2092740,
+    "total_ns": 2306493,
     "iterations": 100000,
-    "ns_per_op": 20.93
+    "ns_per_op": 23.06
   },
   {
     "suite": "Reallocation",
     "operation": "resize() grow",
-    "total_ns": 23738366,
+    "total_ns": 24789176,
     "iterations": 1000000,
-    "ns_per_op": 23.74
+    "ns_per_op": 24.79
   },
   {
     "suite": "Reserve",
     "operation": "reserve()",
-    "total_ns": 7031,
+    "total_ns": 6271,
     "iterations": 10000,
-    "ns_per_op": 0.70
+    "ns_per_op": 0.63
   },
   {
     "suite": "Reserve",
     "operation": "reserve()",
-    "total_ns": 69785,
+    "total_ns": 61715,
     "iterations": 100000,
-    "ns_per_op": 0.70
+    "ns_per_op": 0.62
   },
   {
     "suite": "Reserve",
     "operation": "reserve()",
-    "total_ns": 704947,
+    "total_ns": 627438,
     "iterations": 1000000,
-    "ns_per_op": 0.70
+    "ns_per_op": 0.63
   },
   {
     "suite": "Shrink To Fit",
     "operation": "shrink_to_fit()",
-    "total_ns": 15712184,
+    "total_ns": 16031156,
     "iterations": 10000,
-    "ns_per_op": 1571.22
+    "ns_per_op": 1603.12
   },
   {
     "suite": "Shrink To Fit",
     "operation": "shrink_to_fit()",
-    "total_ns": 142458817,
+    "total_ns": 165954135,
     "iterations": 100000,
-    "ns_per_op": 1424.59
+    "ns_per_op": 1659.54
   },
   {
     "suite": "Shrink To Fit",
     "operation": "shrink_to_fit()",
-    "total_ns": 1380924789,
+    "total_ns": 1524340908,
     "iterations": 1000000,
-    "ns_per_op": 1380.92
+    "ns_per_op": 1524.34
   },
   {
     "suite": "Observer",
     "operation": "hitCount()",
-    "total_ns": 3535,
+    "total_ns": 3155,
     "iterations": 10000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.32
   },
   {
     "suite": "Observer",
     "operation": "hitCount()",
-    "total_ns": 34892,
+    "total_ns": 30867,
     "iterations": 100000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "Observer",
     "operation": "hitCount()",
-    "total_ns": 348402,
+    "total_ns": 308334,
     "iterations": 1000000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "Observer",
     "operation": "missCount()",
-    "total_ns": 3546,
+    "total_ns": 3125,
     "iterations": 10000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "Observer",
     "operation": "missCount()",
-    "total_ns": 43084,
+    "total_ns": 30877,
     "iterations": 100000,
-    "ns_per_op": 0.43
+    "ns_per_op": 0.31
   },
   {
     "suite": "Observer",
     "operation": "missCount()",
-    "total_ns": 348403,
+    "total_ns": 317932,
     "iterations": 1000000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.32
   },
   {
     "suite": "Observer",
     "operation": "hitRate()",
-    "total_ns": 17466,
+    "total_ns": 14177,
     "iterations": 10000,
-    "ns_per_op": 1.75
+    "ns_per_op": 1.42
   },
   {
     "suite": "Observer",
     "operation": "hitRate()",
-    "total_ns": 156806,
+    "total_ns": 143396,
     "iterations": 100000,
-    "ns_per_op": 1.57
+    "ns_per_op": 1.43
   },
   {
     "suite": "Observer",
     "operation": "hitRate()",
-    "total_ns": 1686900,
+    "total_ns": 1443276,
     "iterations": 1000000,
-    "ns_per_op": 1.69
+    "ns_per_op": 1.44
   },
   {
     "suite": "Observer",
     "operation": "mostRecentKey()",
-    "total_ns": 3535,
+    "total_ns": 3157,
     "iterations": 10000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.32
   },
   {
     "suite": "Observer",
     "operation": "mostRecentKey()",
-    "total_ns": 69724,
+    "total_ns": 61725,
     "iterations": 100000,
-    "ns_per_op": 0.70
+    "ns_per_op": 0.62
   },
   {
     "suite": "Observer",
     "operation": "mostRecentKey()",
-    "total_ns": 348403,
+    "total_ns": 317531,
     "iterations": 1000000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.32
   },
   {
     "suite": "Observer",
     "operation": "leastRecentKey()",
-    "total_ns": 3545,
+    "total_ns": 3145,
     "iterations": 10000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "Observer",
     "operation": "leastRecentKey()",
-    "total_ns": 34912,
+    "total_ns": 30898,
     "iterations": 100000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "Observer",
     "operation": "leastRecentKey()",
-    "total_ns": 718828,
+    "total_ns": 616587,
     "iterations": 1000000,
-    "ns_per_op": 0.72
+    "ns_per_op": 0.62
   },
   {
     "suite": "State",
     "operation": "size()",
-    "total_ns": 3546,
+    "total_ns": 3136,
     "iterations": 10000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "State",
     "operation": "size()",
-    "total_ns": 38999,
+    "total_ns": 40505,
     "iterations": 100000,
-    "ns_per_op": 0.39
+    "ns_per_op": 0.41
   },
   {
     "suite": "State",
     "operation": "size()",
-    "total_ns": 423896,
+    "total_ns": 309095,
     "iterations": 1000000,
-    "ns_per_op": 0.42
+    "ns_per_op": 0.31
   },
   {
     "suite": "State",
     "operation": "empty()",
-    "total_ns": 3535,
+    "total_ns": 3136,
     "iterations": 10000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "State",
     "operation": "empty()",
-    "total_ns": 34882,
+    "total_ns": 30878,
     "iterations": 100000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "State",
     "operation": "empty()",
-    "total_ns": 705038,
+    "total_ns": 625505,
     "iterations": 1000000,
-    "ns_per_op": 0.71
+    "ns_per_op": 0.63
   },
   {
     "suite": "State",
     "operation": "capacity()",
-    "total_ns": 3535,
+    "total_ns": 3136,
     "iterations": 10000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "State",
     "operation": "capacity()",
-    "total_ns": 34893,
+    "total_ns": 30887,
     "iterations": 100000,
-    "ns_per_op": 0.35
+    "ns_per_op": 0.31
   },
   {
     "suite": "State",
     "operation": "capacity()",
-    "total_ns": 356225,
+    "total_ns": 317080,
     "iterations": 1000000,
-    "ns_per_op": 0.36
+    "ns_per_op": 0.32
   }
 ]
