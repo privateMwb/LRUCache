@@ -1,9 +1,0 @@
-{
-    "version": 4,
-    "vendor": {
-        "conan": {}
-    },
-    "include": [
-        "build/clang-21-armv8-23-release/generators/CMakePresets.json"
-    ]
-}
