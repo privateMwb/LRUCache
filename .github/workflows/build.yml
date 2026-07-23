@@ -73,7 +73,7 @@ jobs:
       - name: Configure
         env:
           CXX: ${{ matrix.cxx || '' }}
-        run: cmake -S . -B build-${{ matrix.compiler }}-${{ matrix.build_type }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_BENCHMARKS=OFF -DBUILD_TOOLS=OFF -DBUILD_EXAMPLES=OFF
+        run: cmake -S . -B build-${{ matrix.compiler }}-${{ matrix.build_type }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_BENCHMARKS=OFF -DBUILD_REGRESSION=OFF -DBUILD_EXAMPLES=OFF
 
       - name: Build
         run: cmake --build build-${{ matrix.compiler }}-${{ matrix.build_type }} --config ${{ matrix.build_type }}

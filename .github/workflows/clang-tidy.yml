@@ -33,7 +33,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Debug \
             -DCMAKE_CXX_CLANG_TIDY=clang-tidy \
             -DBUILD_BENCHMARKS=OFF \
-            -DBUILD_TOOLS=OFF \
+            -DBUILD_REGRESSION=OFF \
             -DBUILD_EXAMPLES=OFF
 
       - name: Build

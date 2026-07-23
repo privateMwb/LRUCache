@@ -34,7 +34,7 @@ jobs:
             -DCMAKE_CXX_COMPILER=clang++ \
             -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" \
             -DBUILD_BENCHMARKS=OFF \
-            -DBUILD_TOOLS=OFF \
+            -DBUILD_REGRESSION=OFF \
             -DBUILD_EXAMPLES=OFF
 
       - name: Build
