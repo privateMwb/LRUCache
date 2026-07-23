@@ -83,7 +83,7 @@ class Conan(ConanFile):
             variables={
                 "BUILD_TESTS": "OFF",
                 "BUILD_BENCHMARKS": "OFF",
-                "BUILD_TOOLS": "OFF",
+                "BUILD_REGRESSION": "OFF",
                 "BUILD_EXAMPLES": "OFF",
             }
         )
