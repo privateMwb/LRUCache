@@ -74,13 +74,11 @@ overrides below can be dropped entirely off-device.
 just start from the repo root:
 
 ```bash
-cd ~/projects/C++/JsonParser
-
 cmake -B build-install \
   -DCMAKE_INSTALL_PREFIX=$HOME/staging \
   -DBUILD_TESTS=OFF \
   -DBUILD_BENCHMARKS=OFF \
-  -DBUILD_TOOLS=OFF \
+  -DBUILD_REGRESSION=OFF \
   -DBUILD_EXAMPLES=OFF
 
 cmake --build build-install
@@ -109,15 +107,15 @@ cmake_minimum_required(VERSION 3.20)
 project(test CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-find_package(JsonPro CONFIG REQUIRED)
+find_package(CachePro CONFIG REQUIRED)
 add_executable(test main.cpp)
-target_link_libraries(test PRIVATE JsonPro::JsonPro)
+target_link_libraries(test PRIVATE CachePro::CachePro)
 EOF
 
 cat > main.cpp << 'EOF'
-#include <JsonPro/Json.h>
+#include <CachePro/LRUCache.h>
 int main() {
-    JsonPro::Json json;
+    rain::LRUCache<std::string, int> cache(3);
     return 0;
 }
 EOF
@@ -129,7 +127,7 @@ echo "Exit code: $?"
 ```
 
 A clean run prints `Exit code: 0` and nothing else — the consumer
-just default-constructs a `JsonPro::Json` and returns, so success
+just default-constructs a `CachePro::LRUCache` and returns, so success
 already confirms the header parsed, the library linked, and the
 symbols resolved.
 
@@ -146,9 +144,7 @@ the Termux-specific ones from the quirks section above — drop them
 entirely on real CI or a normal Linux machine:
 
 ```bash
-cd ~/projects/C++/JsonParser
-
-conan create packaging/recipes/jsonpro/all --version 1.0.0 \
+conan create packaging/recipes/cachepro/all --version 1.0.0 \
   -s compiler.cppstd=23 -s os=Linux -s:b os=Linux \
   -s compiler.libcxx=libc++ -s:b compiler.libcxx=libc++
 ```
@@ -159,8 +155,8 @@ real static library, not a header-only one — a `package_id` computed
 per settings combination rather than one shared id.
 
 This step also automatically builds and runs
-`packaging/recipes/jsonpro/all/test_package/` against the freshly-built
-package — a `JsonPro linked and constructed successfully.` line in
+`packaging/recipes/cachepro/all/test_package/` against the freshly-built
+package — a `CachePro linked and constructed successfully.` line in
 the output means that already passed, before you even get to step 2.
 
 **2. Build a second, independent consumer project** — this is a
@@ -174,7 +170,7 @@ mkdir -p ~/conan-consumer && cd ~/conan-consumer
 
 cat > conanfile.txt << 'EOF'
 [requires]
-jsonpro/1.0.0
+cachepro/1.0.0
 
 [generators]
 CMakeDeps
@@ -184,15 +180,15 @@ EOF
 cat > CMakeLists.txt << 'EOF'
 cmake_minimum_required(VERSION 3.20)
 project(test CXX)
-find_package(JsonPro CONFIG REQUIRED)
+find_package(CachePro CONFIG REQUIRED)
 add_executable(test main.cpp)
-target_link_libraries(test PRIVATE JsonPro::JsonPro)
+target_link_libraries(test PRIVATE CachePro::CachePro)
 EOF
 
 cat > main.cpp << 'EOF'
-#include <JsonPro/Json.h>
+#include <CachePro/LRUCache.h>
 int main() {
-    JsonPro::Json json;
+    rain::LRUCache<std::string, int> cache(3);
     return 0;
 }
 EOF
