@@ -4,6 +4,9 @@ cmake-build-*/
 install*/
 results*/
 
+# Conan-generated CMake presets (local paths, regenerated every build)
+CMakeUserPresets.json
+
 # Object files
 *.o
 *.obj
