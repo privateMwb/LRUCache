@@ -51,8 +51,8 @@ overrides below can be dropped entirely off-device.
   `vcpkg_cmake_configure`, but relevant if configuring manually).
 
 - **The release tarball extracts to `JsonParser-<version>`, not
-  `JsonPro-<version>`** — the GitHub repo is `JsonParser`; the CMake
-  project/library target inside it is `JsonPro`. `cd` into whatever
+  `CachePro-<version>`** — the GitHub repo is `JsonParser`; the CMake
+  project/library target inside it is `CachePro`. `cd` into whatever
   the tarball actually produced, not the library name. If you don't
   have a published release yet, use the local repo checkout directly
   instead (see step 1 below) — no need to cut a release just to verify
@@ -88,12 +88,12 @@ cmake --install build-install
 **2. Confirm the CMake package files exist:**
 
 ```bash
-find $HOME/staging -name "*.cmake"
+find $HOME/staging/lib/cmake/CachePro -name "*.cmake"
 ```
 
-Expect `JsonProConfig.cmake`, `JsonProConfigVersion.cmake`,
-`JsonProTargets.cmake` (plus a per-config
-`JsonProTargets-<config>.cmake`) under `lib/cmake/JsonPro/`.
+Expect `CacheProConfig.cmake`, `CacheProConfigVersion.cmake`,
+`CacheProTargets.cmake` (plus a per-config
+`CacheProTargets-<config>.cmake`) under `lib/cmake/CachePro/`.
 
 **3. Build a minimal consumer project**, in a separate directory so
 it can't accidentally pick up anything from the library's own build
