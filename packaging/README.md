@@ -2,7 +2,7 @@
 
 Notes for re-verifying the vcpkg port and Conan recipe after changes
 (e.g. a new release, editing `portfile.cmake`, or editing
-`packaging/recipes/jsonpro/all/conanfile.py`). Scoped to what isn't obvious
+`packaging/recipes/cachepro/all/conanfile.py`). Scoped to what isn't obvious
 from the files themselves — not a general build tutorial.
 
 ## Termux-specific quirks
@@ -50,8 +50,8 @@ overrides below can be dropped entirely off-device.
   (already baked into `conanfile.py`'s `build()` and `portfile.cmake`'s
   `vcpkg_cmake_configure`, but relevant if configuring manually).
 
-- **The release tarball extracts to `JsonParser-<version>`, not
-  `CachePro-<version>`** — the GitHub repo is `JsonParser`; the CMake
+- **The release tarball extracts to `LRUCache-<version>`, not
+  `CachePro-<version>`** — the GitHub repo is `LRUCache`; the CMake
   project/library target inside it is `CachePro`. `cd` into whatever
   the tarball actually produced, not the library name. If you don't
   have a published release yet, use the local repo checkout directly
