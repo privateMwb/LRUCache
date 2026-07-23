@@ -43,7 +43,7 @@
   <img src="https://img.shields.io/badge/AppleClang-support-000000?style=flat&logo=apple" alt="AppleClang - support">
 </p>
 
-CachePro is a header-only, fixed-capacity LRU cache for modern C++ — O(1) get/put/erase, a pool-allocated intrusive list instead of `std::list`'s per-node heap allocations, and a flat open-addressing table instead of `std::unordered_map`'s chaining, so steady-state operation performs zero heap allocations at all.
+LRUCache is a header-only, fixed-capacity LRU cache for modern C++ — O(1) get/put/erase, a pool-allocated intrusive list instead of `std::list`'s per-node heap allocations, and a flat open-addressing table instead of `std::unordered_map`'s chaining, so steady-state operation performs zero heap allocations at all.
 
 ## 📑 Table of Contents
 
