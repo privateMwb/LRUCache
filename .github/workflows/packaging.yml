@@ -79,11 +79,11 @@ jobs:
           /tmp/vcpkg/bootstrap-vcpkg.sh -disableMetrics
 
       - name: Configure and build the smoke test
-        working-directory: vcpkg-smoke-test
+        working-directory: packaging/vcpkg-smoke-test
         run: |
           cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake
           cmake --build build
 
       - name: Run the smoke test
-        working-directory: vcpkg-smoke-test
+        working-directory: packaging/vcpkg-smoke-test
         run: ./build/smoke_test
