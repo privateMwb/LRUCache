@@ -5,7 +5,7 @@
 // macros, output helpers, suite registration, and result export.
 
 // clang-format off
-#include <CachePro/LRUCache.h>       //
+#include <CachePro/LRUCache.h>       // CachePro::LRUCache — the implementation being benchmarked
 
 #include "export.h"                  // exportJson(), exportMarkdown()
 #include "helpers.h"                 // output formatting & printing helpers

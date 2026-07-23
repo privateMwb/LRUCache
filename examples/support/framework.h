@@ -5,7 +5,7 @@
 // macros, output helpers, and suite registration.
 
 // clang-format off
-#include <CachePro/LRUCache.h>       //
+#include <CachePro/LRUCache.h>       // CachePro::LRUCache — the library these examples demonstrate
 
 #include "helpers.h"                 // output formatting & printing helpers
 #include "macros.h"                  // REGISTER_EXAMPLE_SUITE()
