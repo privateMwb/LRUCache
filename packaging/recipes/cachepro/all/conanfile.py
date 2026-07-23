@@ -11,7 +11,7 @@ class Conan(ConanFile):
     # derives from them. Version is handled by a separate script, not
     # edited here.
     name = "cachepro"
-    cmake_name = "cachepro"  # matches project()'s name in the top-level CMakeLists.txt
+    cmake_name = "CachePro"  # matches project()'s name in the top-level CMakeLists.txt
     version = "1.0.0"
 
     url = "https://github.com/privateMwb/LRUCache"
