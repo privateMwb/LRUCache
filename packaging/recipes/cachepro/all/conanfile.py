@@ -25,7 +25,12 @@ class Conan(ConanFile):
     )
     # ──────────────────────────────────────────────────────────────
 
-    package_type = "library"
+    # header-library, not "library": there's no compiled src/CachePro/*.cpp
+    # today, so CMakeLists.txt's auto-detect builds an INTERFACE target.
+    # NOTE: if this library ever grows compiled sources, this recipe needs
+    # to switch back to "library" and package_id()/cpp_info.libs need to
+    # become conditional again, mirroring CMakeLists.txt's own auto-detect.
+    package_type = "header-library"
 
     license = "MIT"
     author = "privateMwb"
@@ -59,6 +64,11 @@ class Conan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
+
+    def package_id(self):
+        # Header-only: no compiled ABI, so one package serves every
+        # compiler/arch/build_type combination.
+        self.info.clear()
 
     def validate(self):
         check_min_cppstd(self, 23)
@@ -103,4 +113,5 @@ class Conan(ConanFile):
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", self.cmake_name)
         self.cpp_info.set_property("cmake_target_name", f"{self.cmake_name}::{self.cmake_name}")
-        self.cpp_info.libs = [self.cmake_name]
+        self.cpp_info.bindirs = []
+        self.cpp_info.libdirs = []
