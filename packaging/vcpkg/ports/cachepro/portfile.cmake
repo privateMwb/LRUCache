@@ -8,15 +8,15 @@ vcpkg_from_github(
 set(VCPKG_PORT_NAME CachePro)
 
 # Consumers only need the library itself, not the tests, benchmarks,
-# tools, or examples. tools/ also fetches a third-party dependency via
-# FetchContent at configure time, which requires network access that
-# vcpkg's build sandbox does not allow.
+# regression tools, or examples. regression/ also fetches a third-party
+# dependency via FetchContent at configure time, which requires network
+# access that vcpkg's build sandbox does not allow.
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         -DBUILD_TESTS=OFF
         -DBUILD_BENCHMARKS=OFF
-        -DBUILD_TOOLS=OFF
+        -DBUILD_REGRESSION=OFF
         -DBUILD_EXAMPLES=OFF
 )
 
