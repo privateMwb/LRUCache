@@ -760,8 +760,3 @@ bool LRUCache<K, V, Hash, KeyEqual>::empty() const noexcept {
 }
 
 } // namespace CachePro
-
-/// @brief Short alias so this library can be used as `rain::LRUCache`, while
-/// its true namespace (and all internal diagnostics) remains `CachePro`.
-/// See Node.h for the same alias applied to `rain::Node`.
-namespace rain = CachePro;

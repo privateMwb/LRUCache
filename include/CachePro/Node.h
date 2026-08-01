@@ -103,8 +103,3 @@ template <typename K, typename V> struct Node : Link {
 };
 
 } // namespace CachePro
-
-/// @brief Short alias so this library can be used as `rain::Node`, while its
-/// true namespace (and all internal diagnostics) remains `CachePro`. See
-/// LRUCache.h for the same alias applied to `rain::LRUCache`.
-namespace rain = CachePro;

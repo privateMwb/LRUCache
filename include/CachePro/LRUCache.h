@@ -398,9 +398,17 @@ class LRUCache {
 
 } // namespace CachePro
 
-/// @brief Short alias so this library can be used as `rain::LRUCache`, while
-/// its true namespace (and all internal diagnostics) remains `CachePro`.
-/// See Node.h for the same alias applied to `rain::Node`.
-namespace rain = CachePro;
+/// @brief Umbrella alias so this library's types are reachable as
+/// `rain::LRUCache`, alongside every other project library, while its true
+/// namespace (and all internal diagnostics) remains `CachePro`. Reopens
+/// `rain` rather than aliasing it, since multiple libraries each contribute
+/// their own names into the same `rain` namespace -- an alias
+/// (`namespace rain = CachePro;`) can only ever bind to one target and
+/// collides the moment a second library declares its own `rain` alias to
+/// something else. Declared here only (CachePro's main header); Node.h
+/// does not redeclare this.
+namespace rain {
+using namespace CachePro;
+}
 
 #include "LRUCache.tpp"
