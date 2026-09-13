@@ -75,8 +75,8 @@ void LRUCache<K, V, Hash, KeyEqual>::allocatePool(std::size_t count) {
 
     freeHead_ = nullptr;
     for (std::size_t i = count; i-- > 0;) {
-        FreeSlot* slot = std::construct_at(
-            reinterpret_cast<FreeSlot*>(slotAt<K, V>(storage_, i)), FreeSlot{freeHead_});
+        FreeSlot* slot = std::construct_at(reinterpret_cast<FreeSlot*>(slotAt<K, V>(storage_, i)),
+                                           FreeSlot{freeHead_});
         freeHead_ = slot;
     }
     reservedCapacity_ = count;
@@ -587,9 +587,9 @@ void LRUCache<K, V, Hash, KeyEqual>::rebuildPool(std::size_t newReserved) {
         Node<K, V>* oldNode = static_cast<Node<K, V>*>(current);
         current = current->next;
 
-        Node<K, V>* newNode = std::construct_at(
-            reinterpret_cast<Node<K, V>*>(slotAt<K, V>(newStorage, index)),
-            std::move(oldNode->key), std::move(oldNode->value));
+        Node<K, V>* newNode =
+            std::construct_at(reinterpret_cast<Node<K, V>*>(slotAt<K, V>(newStorage, index)),
+                              std::move(oldNode->key), std::move(oldNode->value));
 
         newNode->prev = prevLink;
         prevLink->next = newNode;
@@ -607,8 +607,8 @@ void LRUCache<K, V, Hash, KeyEqual>::rebuildPool(std::size_t newReserved) {
 
     freeHead_ = nullptr;
     for (std::size_t i = newReserved; i-- > size_;) {
-        FreeSlot* slot = std::construct_at(
-            reinterpret_cast<FreeSlot*>(slotAt<K, V>(newStorage, i)), FreeSlot{freeHead_});
+        FreeSlot* slot = std::construct_at(reinterpret_cast<FreeSlot*>(slotAt<K, V>(newStorage, i)),
+                                           FreeSlot{freeHead_});
         freeHead_ = slot;
     }
 
