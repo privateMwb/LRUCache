@@ -1,11 +1,18 @@
-# LRUCache
-
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/privateMwb/LRUCache?style=for-the-badge&logo=github&color=yellow" alt="Version">
-  <img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" alt="License - MIT">
-  <img src="https://img.shields.io/badge/C%2B%2B-23-blue?style=for-the-badge&logo=c%2B%2B" alt="C++ - 23">
+  <img src=".github/assets/banner.svg" alt="LRUCachePro" width="100%">
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/privateMwb/LRUCache?style=for-the-badge&logo=github&color=6A1FB0&labelColor=0B0616" alt="Version">
+  <img src="https://img.shields.io/badge/License-MIT-9D4EDD?style=for-the-badge&labelColor=0B0616" alt="License - MIT">
+  <img src="https://img.shields.io/badge/C%2B%2B-23-E0AAFF?style=for-the-badge&logo=c%2B%2B&labelColor=0B0616" alt="C++ - 23">
+</p>
+
+<p align="center">
+  <img src=".github/assets/divider.svg" alt="" width="100%">
+</p>
+
+<p align="center"><sub><b>CI / CD</b></sub></p>
 <p align="center">
   <a href="https://github.com/privateMwb/LRUCache/actions/workflows/build.yml">
     <img src="https://github.com/privateMwb/LRUCache/actions/workflows/build.yml/badge.svg" alt="Build and Test">
@@ -13,6 +20,16 @@
   <a href="https://github.com/privateMwb/LRUCache/actions/workflows/benchmark.yml">
     <img src="https://github.com/privateMwb/LRUCache/actions/workflows/benchmark.yml/badge.svg" alt="Benchmarks">
   </a>
+  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/packaging.yml">
+    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/packaging.yml/badge.svg" alt="Packaging">
+  </a>
+  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/release.yml">
+    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/release.yml/badge.svg" alt="Release">
+  </a>
+</p>
+
+<p align="center"><sub><b>Code Quality &amp; Safety</b></sub></p>
+<p align="center">
   <a href="https://github.com/privateMwb/LRUCache/actions/workflows/coverage.yml">
     <img src="https://github.com/privateMwb/LRUCache/actions/workflows/coverage.yml/badge.svg" alt="Coverage">
   </a>
@@ -25,17 +42,29 @@
   <a href="https://github.com/privateMwb/LRUCache/actions/workflows/clang-format.yml">
     <img src="https://github.com/privateMwb/LRUCache/actions/workflows/clang-format.yml/badge.svg" alt="Clang Format">
   </a>
-  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/docs.yml">
-    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/docs.yml/badge.svg" alt="Documentation">
+  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/codeql.yml">
+    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/codeql.yml/badge.svg" alt="CodeQL">
   </a>
-  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/release.yml">
-    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/release.yml/badge.svg" alt="Release">
+  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/cflite_pr.yml">
+    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/cflite_pr.yml/badge.svg" alt="Fuzzing">
   </a>
-  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/packaging.yml">
-    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/packaging.yml/badge.svg" alt="Packaging">
+  <a href="https://www.bestpractices.dev/projects/14610">
+    <img src="https://www.bestpractices.dev/projects/14610/badge" alt="OpenSSF Best Practices">
   </a>
 </p>
 
+<p align="center"><sub><b>Documentation</b></sub></p>
+<p align="center">
+  <a href="https://github.com/privateMwb/LRUCache/actions/workflows/docs.yml">
+    <img src="https://github.com/privateMwb/LRUCache/actions/workflows/docs.yml/badge.svg" alt="Documentation">
+  </a>
+</p>
+
+<p align="center">
+  <img src=".github/assets/divider.svg" alt="" width="100%">
+</p>
+
+<p align="center"><sub><b>Compiler Support</b></sub></p>
 <p align="center">
   <img src="https://img.shields.io/badge/GCC-support-B46F1B?style=flat&logo=gnu" alt="GCC - support">
   <img src="https://img.shields.io/badge/Clang-support-045891?style=flat&logo=llvm" alt="Clang - support">
@@ -43,7 +72,13 @@
   <img src="https://img.shields.io/badge/AppleClang-support-000000?style=flat&logo=apple" alt="AppleClang - support">
 </p>
 
-LRUCache is a header-only, fixed-capacity LRU cache for modern C++ — O(1) get/put/erase, a pool-allocated intrusive list instead of `std::list`'s per-node heap allocations, and a flat open-addressing table instead of `std::unordered_map`'s chaining, so steady-state operation performs zero heap allocations at all.
+<p align="center">
+  <img src=".github/assets/divider.svg" alt="" width="100%">
+</p>
+
+<p align="center">LRUCache is a header-only, fixed-capacity LRU cache for modern C++ — O(1) <code>get()</code>/<code>put()</code>/<code>erase()</code>, a pool-allocated intrusive list instead of <code>std::list</code>'s per-node heap allocations, and a flat open-addressing table instead of <code>std::unordered_map</code>'s chaining, so steady-state operation performs zero heap allocations at all.</p>
+
+<br>
 
 ## 📑 Table of Contents
 
@@ -54,10 +89,14 @@ LRUCache is a header-only, fixed-capacity LRU cache for modern C++ — O(1) get/
 - [Project Structure](#project-structure)
 - [Development](#development)
 - [Benchmarks](#benchmarks)
+- [Fuzzing](#fuzzing)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
+- [Security](#security)
 - [License](#license)
+
+<br>
 
 ## <a id="features"></a>✨ Features
 
@@ -68,10 +107,14 @@ LRUCache is a header-only, fixed-capacity LRU cache for modern C++ — O(1) get/
 - **Real usage statistics** — `hitCount()`/`missCount()`/`hitRate()` are tracked internally, not bolted on by wrapping every call site yourself.
 - **Deliberate control over the memory footprint** — `resize()` grows or shrinks capacity (evicting if needed), `shrink_to_fit()` reclaims unused pool/table space down to the current size, and `reserve()` is an honest no-op (documented as such) rather than a silent copy of `std::unordered_map`'s API for a design that doesn't need it.
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="requirements"></a>📋 Requirements
 
 - A C++23-conformant compiler (tested: GCC, Clang, MSVC, AppleClang)
 - CMake 3.20+
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="installation"></a>📦 Installation
 
@@ -99,6 +142,8 @@ target_link_libraries(your_target PRIVATE CachePro::CachePro)
 > `packaging/recipes/cachepro/`, port in `packaging/vcpkg/ports/cachepro/`),
 > but not yet published to the public registries. This section will be
 > updated once they are.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="quick-start"></a>🚀 Quick Start
 
@@ -141,6 +186,8 @@ try {
 }
 ```
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="project-structure"></a>🗂️ Project Structure
 
 ```
@@ -152,44 +199,58 @@ LRUCache/
 │       └── Node.h
 │
 ├── tests/
-│   ├── support/
-│   ├── suite/
-│   ├── test_main.cpp
-│   └── CMakeLists.txt
+│   ├── custom/
+│   ├── google/
+│   ├── CMakeLists.txt
+│   └── README.md
 │
 ├── benchmarks/
-│   ├── support/
-│   ├── suite/
 │   ├── baselines/
-│   ├── bench_main.cpp
-│   └── CMakeLists.txt
+│   ├── custom/
+│   ├── google/
+│   ├── result/
+│   ├── CMakeLists.txt
+│   └── README.md
 │
 ├── examples/
 │   ├── support/
 │   ├── suite/
 │   ├── example_main.cpp
-│   └── CMakeLists.txt
+│   ├── CMakeLists.txt
+│   └── README.md
 │
 ├── regression/
-│   ├── support/
-│   ├── regression_main.cpp
-│   └── CMakeLists.txt
+│   ├── custom/
+│   ├── google/
+│   ├── results/
+│   ├── CMakeLists.txt
+│   └── README.md
+│
+├── fuzz/
+│   └── fuzz_lrucache.cpp
+│
+├── .clusterfuzzlite/
+│   ├── Dockerfile
+│   ├── build.sh
+│   └── project.yaml
 │
 ├── packaging/
 │   ├── README.md
+│   ├── requirements.in
+│   ├── requirements-conan.txt
 │   ├── recipes/
-│   │   └── cachepro/
 │   ├── vcpkg/
-│   │   └── ports/
-│   │       └── cachepro/
 │   └── vcpkg-smoke-test/
 │
 ├── scripts/
 │   └── update_package_files.py
 │
 ├── .github/
+│   ├── assets/
 │   ├── releases/
-│   └── workflows/
+│   ├── workflows/
+│   ├── CODEOWNERS
+│   └── dependabot.yml
 │
 ├── cmake/
 │   └── CacheProConfig.cmake.in
@@ -198,11 +259,19 @@ LRUCache/
 │   ├── Doxyfile
 │   └── README.md
 │
+├── .clang-format
+├── .clang-tidy
 ├── .gitignore
 ├── CMakeLists.txt
 ├── README.md
+├── CONTRIBUTING.md
+├── CHANGELOG.md
+├── SECURITY.md
+├── FUZZING.md
 └── LICENSE
 ```
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="development"></a>🛠️ Development
 
@@ -237,11 +306,16 @@ auto-names its output (`regression_v1.2.0_vs_current.md`/`.json`, etc.).
 See [packaging/README.md](packaging/README.md) for notes on verifying the vcpkg
 port and Conan recipe locally.
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="benchmarks"></a>📊 Benchmarks
 
 Measured against `stdLRU` (`std::list` + `std::unordered_map`), same
 build, at 10K / 100K / 1M iterations (`benchmarks/baselines/v1.0.0.json`
 has the full dataset).
+
+*See the `context` block in `benchmarks/baselines/v1.0.0.json` for the
+exact machine and library version each run was captured on.*
 
 | Operation | CachePro (1M) | stdLRU (1M) | Δ |
 |---|---|---|---|
@@ -268,25 +342,74 @@ construction — so `Construct Empty` is consistently slower than
 (`Resize() Grow`, `Shrink To Fit()`) pay that cost directly rather than
 amortizing it.
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
+## <a id="fuzzing"></a>🐛 Fuzzing
+
+`LRUCache<int, int>` is continuously fuzzed via
+[ClusterFuzzLite](https://google.github.io/clusterfuzzlite/):
+differential testing against a `std::list`-based shadow model kept in
+the same most-recently-used-first order the real cache maintains,
+under AddressSanitizer and UndefinedBehaviorSanitizer. A short pass
+runs on every PR touching `LRUCache`'s implementation; a longer pass
+runs nightly.
+
+This covers the pool's free-list reuse under evict/erase-then-insert
+cycles, the open-addressing table's linear probing and backward-shift
+deletion, the `get()`/`peek()`/`contains()` recency-and-stats contract,
+`resize()`'s full grow/shrink/`resize(0)` contract, and move
+construction/assignment including self-move-assignment. Custom
+`Hash`/`KeyEqual` template parameters, exception injection during
+`put()`/`emplace()`, and operations on an already-moved-from cache
+aren't covered yet — see [FUZZING.md](FUZZING.md) for full scope,
+running locally, and reproducing a failing input.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="documentation"></a>📖 Documentation
 
 Full API reference, generated with Doxygen from `docs/Doxyfile`:
 
 **https://privateMwb.github.io/LRUCache/**
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="contributing"></a>🤝 Contributing
 
-Issues and pull requests are welcome. Before submitting a PR:
+Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md)
+for the full process, coding standard reference, and what CI checks on
+every PR. Short version, before submitting:
 
 - Run the test suite (`ctest --test-dir build`)
 - If you're changing a hot path, run `./build/regression` and mention
   the results in your PR description
 
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
 ## <a id="changelog"></a>📝 Changelog
 
-See the [Releases](https://github.com/privateMwb/LRUCache/releases)
-page for version history and release notes.
+See [CHANGELOG.md](CHANGELOG.md) for a curated, per-release summary of
+changes, or the [Releases](https://github.com/privateMwb/LRUCache/releases)
+page for the full release notes.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
+
+## <a id="security"></a>🔒 Security
+
+See [SECURITY.md](SECURITY.md) for the supported versions, how to report
+a vulnerability (including privately, via GitHub Security Advisories),
+and the disclosure timeline.
+
+<div align="right"><a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a></div>
 
 ## <a id="license"></a>📄 License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+<p align="center">
+  <sub>Built with C++23</sub>
+</p>
+
+<p align="center">
+  <a href="#-table-of-contents"><img src=".github/assets/back-to-top.svg" alt="Back to top" height="28"></a>
+</p>
