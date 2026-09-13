@@ -36,6 +36,34 @@
 
 namespace CachePro {
 
+namespace {
+
+// Computes the address of the `index`-th Node<K, V> slot within a raw
+// byte buffer previously allocated with `count * sizeof(Node<K, V>)`
+// bytes (see allocatePool()/rebuildPool()).
+//
+// `base` is deliberately std::byte*, not Node<K, V>*: the buffer holds
+// raw, not-yet-constructed storage, so pointer arithmetic on it must
+// be unscaled — one std::byte per address, unlike Node<K, V>*
+// arithmetic, which the language already scales by sizeof(Node<K,V>)
+// per step. That's exactly why `sizeof(Node<K, V>)` appears explicitly
+// here: it's computing a byte offset, not (as CodeQL's
+// suspicious-add-with-sizeof heuristic assumes by default) double-
+// scaling a pointer that the compiler would already scale on its own.
+//
+// This used to be inlined at each of its three call sites as
+// `base + index * sizeof(Node<K, V>)`, which is exactly the surface
+// shape that heuristic flags — three times over, for the one
+// genuinely correct use of the pattern in this file. Centralizing it
+// here means that judgment call only has to be made, and documented,
+// once.
+template <typename K, typename V>
+inline std::byte* slotAt(std::byte* base, std::size_t index) noexcept {
+    return base + index * sizeof(Node<K, V>);
+}
+
+} // namespace
+
 // ============================================================
 //  Section 1 — Pool Management
 // ============================================================
@@ -48,7 +76,7 @@ void LRUCache<K, V, Hash, KeyEqual>::allocatePool(std::size_t count) {
     freeHead_ = nullptr;
     for (std::size_t i = count; i-- > 0;) {
         FreeSlot* slot = std::construct_at(
-            reinterpret_cast<FreeSlot*>(storage_ + i * sizeof(Node<K, V>)), FreeSlot{freeHead_});
+            reinterpret_cast<FreeSlot*>(slotAt<K, V>(storage_, i)), FreeSlot{freeHead_});
         freeHead_ = slot;
     }
     reservedCapacity_ = count;
@@ -560,7 +588,7 @@ void LRUCache<K, V, Hash, KeyEqual>::rebuildPool(std::size_t newReserved) {
         current = current->next;
 
         Node<K, V>* newNode = std::construct_at(
-            reinterpret_cast<Node<K, V>*>(newStorage + index * sizeof(Node<K, V>)),
+            reinterpret_cast<Node<K, V>*>(slotAt<K, V>(newStorage, index)),
             std::move(oldNode->key), std::move(oldNode->value));
 
         newNode->prev = prevLink;
@@ -580,7 +608,7 @@ void LRUCache<K, V, Hash, KeyEqual>::rebuildPool(std::size_t newReserved) {
     freeHead_ = nullptr;
     for (std::size_t i = newReserved; i-- > size_;) {
         FreeSlot* slot = std::construct_at(
-            reinterpret_cast<FreeSlot*>(newStorage + i * sizeof(Node<K, V>)), FreeSlot{freeHead_});
+            reinterpret_cast<FreeSlot*>(slotAt<K, V>(newStorage, i)), FreeSlot{freeHead_});
         freeHead_ = slot;
     }
 
