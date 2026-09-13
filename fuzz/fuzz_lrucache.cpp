@@ -293,10 +293,17 @@ extern "C" int LLVMFuzzerTestOneInput(const std::uint8_t* data, std::size_t size
         }
         case 13: { // move-assign from a freshly built scratch cache (state transfer)
             LRUCache<int, int> scratch(capacity);
-            for (const auto& [k, v] : shadow) {
-                scratch.put(k, v); // rebuilds MRU order back-to-front
+            // shadow is MRU-first; scratch.put() makes the just-inserted
+            // key MRU, so iterate LRU-to-MRU (reverse) to land on the
+            // same recency order as shadow, not the reverse of it.
+            for (auto it = shadow.rbegin(); it != shadow.rend(); ++it) {
+                scratch.put(it->first, it->second);
             }
             cache = std::move(scratch);
+            // scratch was fresh, so its (and now cache's) hit/miss
+            // counters are zero -- the shadow's tracking must follow.
+            shadowHits = 0;
+            shadowMisses = 0;
             // scratch is now moved-from and immediately discarded — never touched again.
             break;
         }
