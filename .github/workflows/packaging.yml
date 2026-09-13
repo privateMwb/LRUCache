@@ -45,11 +45,11 @@ jobs:
           python-version: "3.x"
 
       - name: Install Conan
-        # requirements.txt is hash-pinned (SHA256, including transitive
+        # requirements-conan.txt is hash-pinned (SHA256, including transitive
         # deps) via `pip-compile --generate-hashes`. Regenerate it with:
-        #   pip-compile --generate-hashes --output-file=packaging/requirements.txt packaging/requirements.in
+        #   pip-compile --generate-hashes --output-file=packaging/requirements-conan.txt packaging/requirements.in
         # whenever the pinned Conan version changes.
-        run: pip install --require-hashes -r packaging/requirements.txt
+        run: pip install --require-hashes -r packaging/requirements-conan.txt
 
       - name: Detect default profile
         run: conan profile detect --force
