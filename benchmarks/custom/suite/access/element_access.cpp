@@ -64,8 +64,6 @@ static void bench_peek_hit() {
 // Executes all element access benchmark cases.
 static void run_benchmarks() {
     bench_get_hit();
-    std::cout << "\n";
-
     bench_peek_hit();
 }
 
