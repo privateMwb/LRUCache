@@ -66,8 +66,6 @@ static void bench_get_miss() {
 // Executes all search benchmark cases.
 static void run_benchmarks() {
     bench_contains_miss();
-    std::cout << "\n";
-
     bench_get_miss();
 }
 

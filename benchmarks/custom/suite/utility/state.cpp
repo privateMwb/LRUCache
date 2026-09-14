@@ -81,11 +81,7 @@ static void bench_capacity() {
 // Executes all size/empty/capacity benchmark cases.
 static void run_benchmarks() {
     bench_size();
-    std::cout << "\n";
-
     bench_empty();
-    std::cout << "\n";
-
     bench_capacity();
 }
 

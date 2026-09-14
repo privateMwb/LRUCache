@@ -71,8 +71,6 @@ static void bench_recency_keys_solo() {
 // Executes all observer benchmark cases.
 static void run_benchmarks() {
     bench_stats_solo();
-    std::cout << "\n";
-
     bench_recency_keys_solo();
 }
 
