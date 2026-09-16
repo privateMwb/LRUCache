@@ -19,7 +19,7 @@ using namespace CachePro;
 
 // Verifies a resize() whose table allocation fails leaves the cache in its
 // original, fully usable state.
-static void resize_alloc_failure_leaves_cache_unchanged() {
+static void resize_failure_leaves_unchanged() {
     LRUCache<int, std::string> cache(3);
     cache.put(1, "a");
     cache.put(2, "b");
@@ -38,7 +38,7 @@ static void resize_alloc_failure_leaves_cache_unchanged() {
 
 // Verifies the cache remains fully functional (no use-after-free) after a
 // failed resize() — the real regression this guards against.
-static void cache_usable_after_resize_alloc_failure() {
+static void cache_usable_after_resize_failure() {
     LRUCache<int, std::string> cache(2);
     cache.put(1, "a");
 
@@ -61,8 +61,8 @@ static void cache_usable_after_resize_alloc_failure() {
 
 // Executes all resize() allocation failure test cases.
 static void run_tests() {
-    RUN(resize_alloc_failure_leaves_cache_unchanged);
-    RUN(cache_usable_after_resize_alloc_failure);
+    RUN(resize_failure_leaves_unchanged);
+    RUN(cache_usable_after_resize_failure);
 }
 
 REGISTER_TEST_SUITE();

@@ -16,7 +16,7 @@ using namespace CachePro;
 
 // Verifies move-constructing from an empty source correctly initializes
 // the destination's list, confirmed by subsequent put()s working correctly.
-static void move_construct_from_empty_source_initializes_list() {
+static void move_construct_empty_source() {
     LRUCache<int, std::string> source(4);
 
     LRUCache<int, std::string> dest(std::move(source));
@@ -36,7 +36,7 @@ static void move_construct_from_empty_source_initializes_list() {
 
 // Verifies move-assigning from an empty source correctly reinitializes the
 // destination's list, even when the destination previously held entries.
-static void move_assign_from_empty_source_initializes_list() {
+static void move_assign_empty_source() {
     LRUCache<int, std::string> dest(4);
     dest.put(99, "stale");
 
@@ -56,7 +56,7 @@ static void move_assign_from_empty_source_initializes_list() {
 
 // Verifies moving from an empty source into an also-empty destination
 // still produces a correctly self-linked, usable cache.
-static void move_between_two_empty_caches() {
+static void move_between_empty_caches() {
     LRUCache<int, std::string> dest(2);
     LRUCache<int, std::string> source(5);
 
@@ -71,9 +71,9 @@ static void move_between_two_empty_caches() {
 
 // Executes all empty-source move test cases.
 static void run_tests() {
-    RUN(move_construct_from_empty_source_initializes_list);
-    RUN(move_assign_from_empty_source_initializes_list);
-    RUN(move_between_two_empty_caches);
+    RUN(move_construct_empty_source);
+    RUN(move_assign_empty_source);
+    RUN(move_between_empty_caches);
 }
 
 REGISTER_TEST_SUITE();

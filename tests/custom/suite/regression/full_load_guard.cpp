@@ -14,7 +14,7 @@ using namespace CachePro;
 
 // Verifies a lookup for a missing key terminates correctly at the tightest
 // possible load (capacity 1, so the table is always exactly half full).
-static void find_slot_terminates_at_capacity_one() {
+static void find_slot_terminates_cap_one() {
     LRUCache<int, std::string> cache(1);
     cache.put(1, "a"); // 1 of 2 table slots occupied
 
@@ -25,7 +25,7 @@ static void find_slot_terminates_at_capacity_one() {
 
 // Verifies many put() cycles at capacity 1 terminate and stay correct —
 // each insert always finds the guaranteed empty slot to land in.
-static void put_cycles_terminate_at_capacity_one() {
+static void put_cycles_terminate_cap_one() {
     LRUCache<int, std::string> cache(1);
     for (int i = 0; i < 500; ++i) {
         cache.put(i, "v");
@@ -36,7 +36,7 @@ static void put_cycles_terminate_at_capacity_one() {
 
 // Verifies erase-then-reinsert cycles at capacity 1 also terminate and
 // stay correct, alternating which of the two table slots ends up occupied.
-static void erase_and_reinsert_cycles_terminate_at_capacity_one() {
+static void erase_reinsert_terminate_cap_one() {
     LRUCache<int, std::string> cache(1);
     int currentKey = 1;
     cache.put(currentKey, "v");
@@ -52,9 +52,9 @@ static void erase_and_reinsert_cycles_terminate_at_capacity_one() {
 
 // Executes all full-load guard test cases.
 static void run_tests() {
-    RUN(find_slot_terminates_at_capacity_one);
-    RUN(put_cycles_terminate_at_capacity_one);
-    RUN(erase_and_reinsert_cycles_terminate_at_capacity_one);
+    RUN(find_slot_terminates_cap_one);
+    RUN(put_cycles_terminate_cap_one);
+    RUN(erase_reinsert_terminate_cap_one);
 }
 
 REGISTER_TEST_SUITE();

@@ -14,7 +14,7 @@
 using namespace CachePro;
 
 // Verifies repeatedly touching the already-MRU entry doesn't disturb list order.
-static void repeated_touch_of_front_entry_is_noop() {
+static void repeated_touch_noop() {
     LRUCache<int, std::string> cache(3);
     cache.put(1, "a");
     cache.put(2, "b");
@@ -35,7 +35,7 @@ static void repeated_touch_of_front_entry_is_noop() {
 }
 
 // Verifies a real move still works correctly right after the no-op branch fires.
-static void noop_touch_does_not_break_subsequent_real_move() {
+static void noop_touch_no_break() {
     LRUCache<int, std::string> cache(3);
     cache.put(1, "a");
     cache.put(2, "b");
@@ -51,7 +51,7 @@ static void noop_touch_does_not_break_subsequent_real_move() {
 }
 
 // Verifies the no-op branch on a single-entry cache leaves it fully intact.
-static void noop_touch_on_single_entry_cache() {
+static void noop_touch_single_entry() {
     LRUCache<int, std::string> cache(1);
     cache.put(1, "a");
 
@@ -65,9 +65,9 @@ static void noop_touch_on_single_entry_cache() {
 
 // Executes all moveToFront() no-op test cases.
 static void run_tests() {
-    RUN(repeated_touch_of_front_entry_is_noop);
-    RUN(noop_touch_does_not_break_subsequent_real_move);
-    RUN(noop_touch_on_single_entry_cache);
+    RUN(repeated_touch_noop);
+    RUN(noop_touch_no_break);
+    RUN(noop_touch_single_entry);
 }
 
 REGISTER_TEST_SUITE();
