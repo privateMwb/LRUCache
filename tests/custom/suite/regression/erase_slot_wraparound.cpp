@@ -29,7 +29,7 @@ using WrapCache = LRUCache<int, std::string, CollidingHash>;
 
 // Verifies erasing an entry in the wrapped portion of a cluster leaves the
 // rest of the cluster fully reachable.
-static void erase_middle_of_wrapped_cluster_stays_reachable() {
+static void erase_middle_wrapped_cluster() {
     // capacity 3 -> table size 8 (tableSizeFor(3) = 8), mask 7.
     // All three keys hash to 7, so they land at slots 7, 0, 1 in order —
     // a cluster that wraps across the table boundary.
@@ -49,7 +49,7 @@ static void erase_middle_of_wrapped_cluster_stays_reachable() {
 
 // Verifies erasing the entry at the cluster's true home slot (just before
 // the wrap) still leaves the wrapped entries reachable.
-static void erase_home_slot_before_wrap_keeps_wrapped_entries() {
+static void erase_home_before_wrap() {
     WrapCache cache(3);
     cache.put(1, "a"); // slot 7 (home slot, pre-wrap)
     cache.put(2, "b"); // slot 0 (wrapped)
@@ -66,7 +66,7 @@ static void erase_home_slot_before_wrap_keeps_wrapped_entries() {
 
 // Verifies erasing the last entry in a wrapped cluster leaves the earlier
 // (pre-wrap) entries reachable.
-static void erase_end_of_wrapped_cluster_keeps_earlier_entries() {
+static void erase_end_wrapped_cluster() {
     WrapCache cache(3);
     cache.put(1, "a"); // slot 7
     cache.put(2, "b"); // slot 0
@@ -81,9 +81,9 @@ static void erase_end_of_wrapped_cluster_keeps_earlier_entries() {
 
 // Executes all erase() wraparound test cases.
 static void run_tests() {
-    RUN(erase_middle_of_wrapped_cluster_stays_reachable);
-    RUN(erase_home_slot_before_wrap_keeps_wrapped_entries);
-    RUN(erase_end_of_wrapped_cluster_keeps_earlier_entries);
+    RUN(erase_middle_wrapped_cluster);
+    RUN(erase_home_before_wrap);
+    RUN(erase_end_wrapped_cluster);
 }
 
 REGISTER_TEST_SUITE();

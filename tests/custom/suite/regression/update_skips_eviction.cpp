@@ -13,7 +13,7 @@ using namespace CachePro;
 
 // Verifies put() on an existing key at full capacity updates in place
 // without evicting anything else.
-static void put_update_at_capacity_does_not_evict() {
+static void put_update_no_evict() {
     LRUCache<int, std::string> cache(2);
     cache.put(1, "a");
     cache.put(2, "b");
@@ -28,7 +28,7 @@ static void put_update_at_capacity_does_not_evict() {
 
 // Verifies emplace() on an existing key at full capacity updates in place
 // without evicting anything else.
-static void emplace_update_at_capacity_does_not_evict() {
+static void emplace_update_no_evict() {
     LRUCache<int, std::string> cache(2);
     cache.put(1, "a");
     cache.put(2, "b");
@@ -42,7 +42,7 @@ static void emplace_update_at_capacity_does_not_evict() {
 
 // Verifies repeatedly updating the same key at full capacity never
 // shrinks the live set below capacity via spurious eviction.
-static void repeated_updates_at_capacity_preserve_all_entries() {
+static void repeated_updates_preserve_all() {
     LRUCache<int, std::string> cache(3);
     cache.put(1, "a");
     cache.put(2, "b");
@@ -59,9 +59,9 @@ static void repeated_updates_at_capacity_preserve_all_entries() {
 
 // Executes all update-skips-eviction test cases.
 static void run_tests() {
-    RUN(put_update_at_capacity_does_not_evict);
-    RUN(emplace_update_at_capacity_does_not_evict);
-    RUN(repeated_updates_at_capacity_preserve_all_entries);
+    RUN(put_update_no_evict);
+    RUN(emplace_update_no_evict);
+    RUN(repeated_updates_preserve_all);
 }
 
 REGISTER_TEST_SUITE();
