@@ -27,6 +27,7 @@
 
 // clang-format off
 #include <algorithm> // std::max
+#include <cstdint>   // std::uint32_t, std::uint64_t
 #include <memory>    // std::construct_at, std::destroy_at
 #include <new>       // ::operator new/delete, std::align_val_t
 #include <stdexcept> // std::invalid_argument
@@ -234,12 +235,28 @@ void LRUCache<K, V, Hash, KeyEqual>::rebuildTable(Slot* newTable, std::size_t ne
 
 template <typename K, typename V, typename Hash, typename KeyEqual>
 std::size_t LRUCache<K, V, Hash, KeyEqual>::mixHash(std::size_t h) noexcept {
-    h ^= h >> 33;
-    h *= 0xff51afd7ed558ccdULL;
-    h ^= h >> 33;
-    h *= 0xc4ceb9fe1a85ec53ULL;
-    h ^= h >> 33;
-    return h;
+    // Each branch works on a fixed-width type, so it is well-defined and
+    // warning-free whatever std::size_t is. (Shifting a 32-bit size_t by 33,
+    // as the old single-path code did on wasm32, is undefined behaviour.)
+    if constexpr (sizeof(std::size_t) >= 8) {
+        // MurmurHash3 64-bit finalizer (unchanged behaviour on 64-bit targets).
+        std::uint64_t x = h;
+        x ^= x >> 33;
+        x *= 0xff51afd7ed558ccdULL;
+        x ^= x >> 33;
+        x *= 0xc4ceb9fe1a85ec53ULL;
+        x ^= x >> 33;
+        return static_cast<std::size_t>(x);
+    } else {
+        // MurmurHash3 32-bit finalizer, for 32-bit targets such as wasm32.
+        std::uint32_t x = static_cast<std::uint32_t>(h);
+        x ^= x >> 16;
+        x *= 0x85ebca6bU;
+        x ^= x >> 13;
+        x *= 0xc2b2ae35U;
+        x ^= x >> 16;
+        return static_cast<std::size_t>(x);
+    }
 }
 
 template <typename K, typename V, typename Hash, typename KeyEqual>
