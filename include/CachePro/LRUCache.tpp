@@ -339,7 +339,10 @@ LRUCache<K, V, Hash, KeyEqual>::LRUCache(std::size_t capacity)
     head_.next = &tail_;
     tail_.prev = &head_;
 
-    allocatePool(capacity_);
+    // One spare slot beyond the logical capacity: an insert into a full cache
+    // builds the new node in the spare *before* evicting, so a throwing K/V
+    // constructor leaves the cache untouched (strong exception guarantee).
+    allocatePool(capacity_ + 1);
 
     try {
         tableCapacity_ = tableSizeFor(capacity_);
@@ -460,14 +463,14 @@ void LRUCache<K, V, Hash, KeyEqual>::putImpl(K2&& key, V2&& value) {
         return;
     }
 
-    if (size_ == capacity_) [[unlikely]] {
-        evictLRU();
-    }
-
     // Node is fully constructed — including K's and V's constructors,
-    // which may throw — before anything touches the table or list. If
-    // acquireNode() throws, the cache is left exactly as it was.
+    // which may throw — before anything touches the table or list. When
+    // the cache is full this uses the spare pool slot, so a throw here
+    // leaves the cache exactly as it was: nothing has been evicted yet.
     Node<K, V>* node = acquireNode(std::forward<K2>(key), std::forward<V2>(value));
+    if (size_ > capacity_) [[unlikely]] {
+        evictLRU(); // noexcept; the new node is not linked yet, so this is the true LRU
+    }
     insertSlot(hash, node);
     insertFront(node);
 }
@@ -504,14 +507,14 @@ V& LRUCache<K, V, Hash, KeyEqual>::emplace(const K& key, Args&&... args) {
         return table_[idx].node->value;
     }
 
-    if (size_ == capacity_) [[unlikely]] {
-        evictLRU();
-    }
-
     // Forwards args straight into V's constructor — no intermediate V
     // temporary, unlike the update path above (which must build one to
-    // replace an existing live value).
+    // replace an existing live value). Built before any eviction (see
+    // putImpl) so a throwing constructor leaves the cache unchanged.
     Node<K, V>* node = acquireNodeEmplace(key, std::forward<Args>(args)...);
+    if (size_ > capacity_) [[unlikely]] {
+        evictLRU();
+    }
     insertSlot(hash, node);
     insertFront(node);
     return node->value;
@@ -667,7 +670,7 @@ void LRUCache<K, V, Hash, KeyEqual>::shrink_to_fit() {
     std::size_t newTableCapacity = tableSizeFor(size_);
     Slot* newTable = new Slot[newTableCapacity]; // may throw -- nothing committed yet
 
-    rebuildPool(size_);                       // must run first — moves node addresses
+    rebuildPool(size_ + 1);                   // +1 spare slot; must run first — moves node addresses
     rebuildTable(newTable, newTableCapacity); // re-derives every slot from the now-current list
 
     capacity_ = size_;
@@ -679,7 +682,7 @@ void LRUCache<K, V, Hash, KeyEqual>::resize(std::size_t newCapacity) {
         throw std::invalid_argument("LRUCache capacity must be greater than 0");
     }
 
-    if (newCapacity > std::numeric_limits<std::size_t>::max() / sizeof(Node<K, V>)) {
+    if (newCapacity >= std::numeric_limits<std::size_t>::max() / sizeof(Node<K, V>)) {
         throw std::bad_alloc();
     }
 
@@ -692,7 +695,7 @@ void LRUCache<K, V, Hash, KeyEqual>::resize(std::size_t newCapacity) {
     // Lazy path: physical pool + table are already big enough — just
     // move the logical bound, no reallocation. Mirrors
     // std::unordered_map::reserve()'s no-op-when-sufficient behavior.
-    if (newCapacity <= reservedCapacity_ && newTableCapacity <= tableCapacity_) {
+    if (newCapacity + 1 <= reservedCapacity_ && newTableCapacity <= tableCapacity_) {
         capacity_ = newCapacity;
         return;
     }
@@ -700,7 +703,7 @@ void LRUCache<K, V, Hash, KeyEqual>::resize(std::size_t newCapacity) {
     // Real growth needed — pad the reservation (1.5x) so the next
     // several incremental resize() calls hit the lazy path above
     // instead of reallocating on every single call.
-    std::size_t newReserved = std::max(newCapacity, reservedCapacity_ + reservedCapacity_ / 2 + 1);
+    std::size_t newReserved = std::max(newCapacity + 1, reservedCapacity_ + reservedCapacity_ / 2 + 1);
     std::size_t newReservedTableCapacity = tableSizeFor(newReserved);
 
     Slot* newTable = new Slot[newReservedTableCapacity]; // may throw -- nothing committed yet
@@ -714,7 +717,7 @@ void LRUCache<K, V, Hash, KeyEqual>::resize(std::size_t newCapacity) {
 
 template <typename K, typename V, typename Hash, typename KeyEqual>
 void LRUCache<K, V, Hash, KeyEqual>::reserve(std::size_t count) {
-    if (count <= reservedCapacity_) {
+    if (count + 1 <= reservedCapacity_) { // +1: the spare slot every capacity keeps
         return; // already enough physical pool room
     }
 
@@ -726,7 +729,7 @@ void LRUCache<K, V, Hash, KeyEqual>::reserve(std::size_t count) {
     std::size_t newTableCapacity = tableSizeFor(count);
     Slot* newTable = new Slot[newTableCapacity]; // may throw -- nothing committed yet
 
-    rebuildPool(count);                       // must run first — moves node addresses
+    rebuildPool(count + 1);                   // +1 spare slot; must run first — moves node addresses
     rebuildTable(newTable, newTableCapacity); // re-derives every slot from the now-current list
     // capacity_ (the logical bound) is intentionally untouched — this
     // only pre-grows physical storage so a later resize() up to
