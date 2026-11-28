@@ -670,7 +670,7 @@ void LRUCache<K, V, Hash, KeyEqual>::shrink_to_fit() {
     std::size_t newTableCapacity = tableSizeFor(size_);
     Slot* newTable = new Slot[newTableCapacity]; // may throw -- nothing committed yet
 
-    rebuildPool(size_ + 1);                   // +1 spare slot; must run first — moves node addresses
+    rebuildPool(size_ + 1); // +1 spare slot; must run first — moves node addresses
     rebuildTable(newTable, newTableCapacity); // re-derives every slot from the now-current list
 
     capacity_ = size_;
@@ -703,7 +703,8 @@ void LRUCache<K, V, Hash, KeyEqual>::resize(std::size_t newCapacity) {
     // Real growth needed — pad the reservation (1.5x) so the next
     // several incremental resize() calls hit the lazy path above
     // instead of reallocating on every single call.
-    std::size_t newReserved = std::max(newCapacity + 1, reservedCapacity_ + reservedCapacity_ / 2 + 1);
+    std::size_t newReserved =
+        std::max(newCapacity + 1, reservedCapacity_ + reservedCapacity_ / 2 + 1);
     std::size_t newReservedTableCapacity = tableSizeFor(newReserved);
 
     Slot* newTable = new Slot[newReservedTableCapacity]; // may throw -- nothing committed yet
@@ -718,7 +719,7 @@ void LRUCache<K, V, Hash, KeyEqual>::resize(std::size_t newCapacity) {
 template <typename K, typename V, typename Hash, typename KeyEqual>
 void LRUCache<K, V, Hash, KeyEqual>::reserve(std::size_t count) {
     if (count + 1 <= reservedCapacity_) { // +1: the spare slot every capacity keeps
-        return; // already enough physical pool room
+        return;                           // already enough physical pool room
     }
 
     // rebuildPool() always relocates every live node to new addresses,
@@ -729,7 +730,7 @@ void LRUCache<K, V, Hash, KeyEqual>::reserve(std::size_t count) {
     std::size_t newTableCapacity = tableSizeFor(count);
     Slot* newTable = new Slot[newTableCapacity]; // may throw -- nothing committed yet
 
-    rebuildPool(count + 1);                   // +1 spare slot; must run first — moves node addresses
+    rebuildPool(count + 1); // +1 spare slot; must run first — moves node addresses
     rebuildTable(newTable, newTableCapacity); // re-derives every slot from the now-current list
     // capacity_ (the logical bound) is intentionally untouched — this
     // only pre-grows physical storage so a later resize() up to
